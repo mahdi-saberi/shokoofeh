@@ -16,12 +16,12 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user is accessing from admin panel
-        if (request()->is('admin/*') || $user->role === 'admin' || $user->role === 'super_admin') {
+        // Check if user has admin privileges and is accessing from admin panel
+        if ((request()->is('admin/*') || $user->hasAdminPrivileges()) && $user->hasAdminPrivileges()) {
             return view('profile.edit', compact('user'));
         }
 
-        // Regular user view
+        // Regular user view for customers and users accessing non-admin profile
         $siteSettings = \App\Models\SiteSetting::current();
         return view('profile.user-edit', compact('user', 'siteSettings'));
     }
@@ -39,8 +39,8 @@ class ProfileController extends Controller
         ];
 
         // Super admin can change role and status
-        if ($user->role === 'super_admin') {
-            $rules['role'] = 'required|in:admin,super_admin';
+        if ($user->isSuperAdmin()) {
+            $rules['role'] = 'required|in:admin,super_admin,customer';
             $rules['is_active'] = 'boolean';
         }
 
@@ -59,7 +59,7 @@ class ProfileController extends Controller
         ];
 
         // Super admin can update role and status
-        if ($user->role === 'super_admin') {
+        if ($user->isSuperAdmin()) {
             $updateData['role'] = $request->role;
             $updateData['is_active'] = $request->boolean('is_active', true);
         }
@@ -76,10 +76,12 @@ class ProfileController extends Controller
         // Log the activity
         ActivityLog::createLog('update', $user, $oldValues, $newValues);
 
-        // Determine redirect route based on user role
-        $redirectRoute = ($user->role === 'admin' || $user->role === 'super_admin')
-            ? 'admin.profile.edit'
-            : 'profile.edit';
+        // Determine redirect route based on user role and access context
+        if ($user->hasAdminPrivileges() && request()->is('admin/*')) {
+            $redirectRoute = 'admin.profile.edit';
+        } else {
+            $redirectRoute = 'profile.edit';
+        }
 
         return redirect()->route($redirectRoute)
                        ->with('success', 'اطلاعات پروفایل با موفقیت بروزرسانی شد.');
@@ -111,10 +113,12 @@ class ProfileController extends Controller
         // Log the activity
         ActivityLog::createLog('update', $user, ['password' => '***'], ['password' => '*** (تغییر یافت)']);
 
-        // Determine redirect route based on user role
-        $redirectRoute = ($user->role === 'admin' || $user->role === 'super_admin')
-            ? 'admin.profile.edit'
-            : 'profile.edit';
+        // Determine redirect route based on user role and access context
+        if ($user->hasAdminPrivileges() && request()->is('admin/*')) {
+            $redirectRoute = 'admin.profile.edit';
+        } else {
+            $redirectRoute = 'profile.edit';
+        }
 
         return redirect()->route($redirectRoute)
                        ->with('success', 'رمز عبور با موفقیت تغییر یافت.');

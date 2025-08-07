@@ -12,10 +12,16 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get all available options
-        $categories = Category::pluck('title')->toArray();
-        $ageGroups = AgeGroup::pluck('title')->toArray();
-        $gameTypes = GameType::pluck('title')->toArray();
+        // Get all available options with IDs
+        $categories = Category::all();
+        $ageGroups = AgeGroup::all();
+        $gameTypes = GameType::all();
+
+        // Create a map of category names to IDs
+        $categoryMap = [];
+        foreach ($categories as $category) {
+            $categoryMap[$category->title] = $category->id;
+        }
 
         // Enhanced product templates matching Categories table
         $productTemplates = [
@@ -86,10 +92,16 @@ class ProductSeeder extends Seeder
             foreach ($products as $productName) {
                 if ($productCount >= $totalProducts) break 2;
 
-                // Select random single values for each field
-                $selectedCategory = [$categoryName];
-                $selectedAgeGroup = [$ageGroups[array_rand($ageGroups)]];
-                $selectedGameType = [$gameTypes[array_rand($gameTypes)]];
+                // Use ID instead of name for category
+                $selectedCategoryId = $categoryMap[$categoryName] ?? $categories->first()->id;
+                $selectedCategory = [$selectedCategoryId];
+
+                // Use random IDs for age group and game type
+                $selectedAgeGroupId = $ageGroups->random()->id;
+                $selectedAgeGroup = [$selectedAgeGroupId];
+
+                $selectedGameTypeId = $gameTypes->random()->id;
+                $selectedGameType = [$selectedGameTypeId];
 
                 // Generate random price between 50,000 to 1,000,000 tomans
                 $price = rand(50, 1000) * 1000;
@@ -123,9 +135,16 @@ class ProductSeeder extends Seeder
             $randomProducts = $productTemplates[$randomCategoryName];
             $randomProductName = $randomProducts[array_rand($randomProducts)] . ' ' . $productCount;
 
-            $selectedCategory = [$randomCategoryName];
-            $selectedAgeGroup = [$ageGroups[array_rand($ageGroups)]];
-            $selectedGameType = [$gameTypes[array_rand($gameTypes)]];
+            // Use ID instead of name for category
+            $selectedCategoryId = $categoryMap[$randomCategoryName] ?? $categories->first()->id;
+            $selectedCategory = [$selectedCategoryId];
+
+            // Use random IDs for age group and game type
+            $selectedAgeGroupId = $ageGroups->random()->id;
+            $selectedAgeGroup = [$selectedAgeGroupId];
+
+            $selectedGameTypeId = $gameTypes->random()->id;
+            $selectedGameType = [$selectedGameTypeId];
 
             // Select random gender
             $genders = ['دختر', 'پسر', 'هردو'];

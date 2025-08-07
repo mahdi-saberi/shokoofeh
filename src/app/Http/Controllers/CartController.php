@@ -218,4 +218,17 @@ class CartController extends Controller
             })
         ]);
     }
+
+    /**
+     * دریافت تعداد آیتم های سبد خرید
+     */
+    public function count()
+    {
+        $cartCount = Cart::getCartCount(Auth::user(), session()->getId());
+
+        return response()->json([
+            'success' => true,
+            'count' => $cartCount
+        ]);
+    }
 }

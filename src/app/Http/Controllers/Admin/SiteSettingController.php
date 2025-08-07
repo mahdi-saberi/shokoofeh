@@ -39,7 +39,11 @@ class SiteSettingController extends Controller
             'footer_text' => 'nullable|string|max:1000',
             'copyright_text' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:1000',
-            'meta_description' => 'nullable|string|max:500'
+            'meta_description' => 'nullable|string|max:500',
+            'header_announcement_enabled' => 'boolean',
+            'header_announcement_text' => 'nullable|string|max:1000',
+            'header_announcement_bg_color' => 'nullable|string|max:7',
+            'header_announcement_text_color' => 'nullable|string|max:7'
         ]);
 
         $settings = SiteSetting::current();

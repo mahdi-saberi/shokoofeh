@@ -35,13 +35,28 @@ class Product extends Model
         return $query->where('stock', '<=', 0);
     }
 
-    // Accessor for age_group to ensure it's always an array
+    // Accessor for age_group - تبدیل ID به عنوان
     public function getAgeGroupAttribute($value)
     {
         if (is_string($value)) {
-            return json_decode($value, true) ?? [];
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                $ageGroupTitles = [];
+                foreach ($decoded as $ageGroupId) {
+                    if (is_numeric($ageGroupId)) {
+                        $ageGroup = \App\Models\AgeGroup::find($ageGroupId);
+                        if ($ageGroup) {
+                            $ageGroupTitles[] = $ageGroup->title;
+                        }
+                    } else {
+                        $ageGroupTitles[] = $ageGroupId;
+                    }
+                }
+                return $ageGroupTitles;
+            }
+            return [$value];
         }
-        return $value ?? [];
+        return is_array($value) ? $value : [$value];
     }
 
     // Mutator for age_group to ensure it's stored as JSON
@@ -51,6 +66,40 @@ class Product extends Model
             $this->attributes['age_group'] = json_encode($value);
         } else {
             $this->attributes['age_group'] = $value;
+        }
+    }
+
+    // Accessor for game_type - تبدیل ID به عنوان
+    public function getGameTypeAttribute($value)
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                $gameTypeTitles = [];
+                foreach ($decoded as $gameTypeId) {
+                    if (is_numeric($gameTypeId)) {
+                        $gameType = \App\Models\GameType::find($gameTypeId);
+                        if ($gameType) {
+                            $gameTypeTitles[] = $gameType->title;
+                        }
+                    } else {
+                        $gameTypeTitles[] = $gameTypeId;
+                    }
+                }
+                return $gameTypeTitles;
+            }
+            return [$value];
+        }
+        return is_array($value) ? $value : [$value];
+    }
+
+    // Mutator for game_type to ensure it's stored as JSON
+    public function setGameTypeAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['game_type'] = json_encode($value);
+        } else {
+            $this->attributes['game_type'] = $value;
         }
     }
 
@@ -243,5 +292,62 @@ class Product extends Model
     public function scopeByGender($query, $gender)
     {
         return $query->where('gender', $gender);
+    }
+
+    /**
+     * دریافت Category مرتبط با محصول
+     */
+    public function getCategoryAttribute($value)
+    {
+        // اگر category یک ID است، Category مربوطه را برمی‌گرداند
+        if (is_numeric($value)) {
+            return Category::find($value);
+        }
+
+        // اگر array است، آن را decode می‌کند
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded) && count($decoded) > 0 && is_numeric($decoded[0])) {
+                return Category::find($decoded[0]);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * دریافت AgeGroup مرتبط با محصول
+     */
+    public function getAgeGroupObjectAttribute()
+    {
+        $ageGroups = $this->age_group;
+        if (is_array($ageGroups) && count($ageGroups) > 0 && is_numeric($ageGroups[0])) {
+            return AgeGroup::find($ageGroups[0]);
+        }
+        return null;
+    }
+
+    /**
+     * دریافت GameType مرتبط با محصول
+     */
+    public function getGameTypeObjectAttribute()
+    {
+        $gameTypes = json_decode($this->attributes['game_type'] ?? '[]', true);
+        if (is_array($gameTypes) && count($gameTypes) > 0 && is_numeric($gameTypes[0])) {
+            return GameType::find($gameTypes[0]);
+        }
+        return null;
+    }
+
+    /**
+     * Accessor برای URL تصویر
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->image && file_exists(storage_path('app/public/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+
+        // تصویر پیش‌فرض برای اسباب بازی
+        return 'https://via.placeholder.com/300x200/FFE66D/333333?text=' . urlencode('🧸 ' . ($this->title ?? 'محصول'));
     }
 }

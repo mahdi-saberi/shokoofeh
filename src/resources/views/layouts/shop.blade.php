@@ -123,11 +123,62 @@
         .header-btn.primary {
             background: #ef394e;
             color: white;
-            border-color: #ef394e;
         }
 
         .header-btn.primary:hover {
-            background: #d32f2f;
+            background: #d63031;
+            color: white;
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 8px 0;
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            direction: rtl;
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 8px 0;
         }
 
         .cart-count {
@@ -300,10 +351,69 @@
                             <span class="cart-count" id="cart-count">0</span>
                         </a>
                         @auth
-                            <a href="{{ route('admin.dashboard') }}" class="header-btn">
-                                <i class="fas fa-user"></i>
-                                {{ auth()->user()->name }}
-                            </a>
+                            @if(auth()->user()->hasAdminPrivileges())
+                                <a href="{{ route('admin.dashboard') }}" class="header-btn">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    پنل مدیریت
+                                </a>
+                                <div class="dropdown">
+                                    <a href="#" class="header-btn dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fas fa-user"></i>
+                                        {{ auth()->user()->name }}
+                                        <i class="fas fa-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                            <i class="fas fa-user-edit me-2"></i>
+                                            ویرایش پروفایل
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="{{ route('logout') }}" class="dropdown-item"
+                                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <i class="fas fa-sign-out-alt me-2"></i>
+                                            خروج
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </div>
+                            @else
+                                <a href="{{ route('customer.orders.index') }}" class="header-btn">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    سفارشات من
+                                </a>
+                                <div class="dropdown">
+                                    <a href="#" class="header-btn dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fas fa-user"></i>
+                                        {{ auth()->user()->name }}
+                                        <i class="fas fa-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                            <i class="fas fa-user-edit me-2"></i>
+                                            ویرایش پروفایل
+                                        </a>
+                                        <a href="{{ route('customer.orders.index') }}" class="dropdown-item">
+                                            <i class="fas fa-shopping-bag me-2"></i>
+                                            سفارشات من
+                                        </a>
+                                        <a href="{{ route('customer.orders.track') }}" class="dropdown-item">
+                                            <i class="fas fa-search me-2"></i>
+                                            پیگیری سفارش
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="{{ route('logout') }}" class="dropdown-item"
+                                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <i class="fas fa-sign-out-alt me-2"></i>
+                                            خروج
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
                         @else
                             <a href="{{ route('login') }}" class="header-btn">
                                 <i class="fas fa-user"></i>
@@ -553,6 +663,62 @@
         // Load initial cart count on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadCartCount();
+        });
+    </script>
+
+    <script>
+        // Cart count update
+        function updateCartCount() {
+            fetch('{{ route("cart.count") }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('cart-count').textContent = data.count;
+                    }
+                })
+                .catch(error => console.error('Error updating cart count:', error));
+        }
+
+        // Update cart count on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+
+            // Dropdown functionality
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+
+            dropdownToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const dropdown = this.closest('.dropdown');
+                    const isOpen = dropdown.classList.contains('show');
+
+                    // Close all dropdowns
+                    document.querySelectorAll('.dropdown').forEach(function(d) {
+                        d.classList.remove('show');
+                    });
+
+                    // Toggle current dropdown
+                    if (!isOpen) {
+                        dropdown.classList.add('show');
+                    }
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+                    dropdown.classList.remove('show');
+                });
+            });
+
+            // Prevent dropdown close when clicking inside
+            document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                menu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 

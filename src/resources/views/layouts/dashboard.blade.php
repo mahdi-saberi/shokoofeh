@@ -1011,6 +1011,16 @@
                             ⚙️ تنظیمات سایت
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                            📦 سفارشات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.tickets.index') }}" class="nav-link {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
+                            🎫 تیکت‌ها
+                        </a>
+                    </li>
 
                     <li class="nav-item" style="border-top: 1px solid #34495e; margin-top: 1rem; padding-top: 1rem;">
                         <a href="{{ route('admin.profile.edit') }}" class="nav-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">

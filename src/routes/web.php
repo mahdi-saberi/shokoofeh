@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use Illuminate\Support\Facades\Auth;
 
 // Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -20,6 +21,7 @@ Route::put('/cart/{item}', [CartController::class, 'update'])->name('cart.update
 Route::delete('/cart/{item}', [CartController::class, 'remove'])->name('cart.remove');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart/data', [CartController::class, 'data'])->name('cart.data');
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 
 // Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -29,7 +31,7 @@ Route::post('/checkout/payment/{order}', [CheckoutController::class, 'processPay
 Route::get('/checkout/verify/{order}', [CheckoutController::class, 'verifyPayment'])->name('checkout.verify');
 Route::post('/guest-register', [CheckoutController::class, 'guestRegister'])->name('guest.register');
 
-// صفحه اصلی (landing page) - بدون نیاز به authentication
+// صفحه اصلی فروشگاه - دسترسی عمومی
 Route::get('/', function () {
     $query = \App\Models\Product::query();
 
@@ -143,10 +145,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
+    // Customer Orders Routes - فقط برای مشتریان
+    Route::middleware('customer')->group(function () {
+        Route::get('/my-orders', [\App\Http\Controllers\CustomerOrderController::class, 'index'])->name('customer.orders.index');
+        Route::get('/my-orders/{order}', [\App\Http\Controllers\CustomerOrderController::class, 'show'])->name('customer.orders.show');
+        Route::get('/track-order', [\App\Http\Controllers\CustomerOrderController::class, 'track'])->name('customer.orders.track');
+        Route::post('/track-order', [\App\Http\Controllers\CustomerOrderController::class, 'track'])->name('customer.orders.track.search');
+        Route::post('/my-orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
+    });
 });
 
-// Admin Panel Routes - نیاز به authentication
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+// Admin Panel Routes - نیاز به authentication و admin
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin Dashboard
     Route::get('/dashboard', function () {
         $products = \App\Models\Product::latest()->take(5)->get();
@@ -179,6 +190,15 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'edit'])->name('site-settings.edit');
     Route::put('/site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
     Route::get('/site-settings/preview', [\App\Http\Controllers\Admin\SiteSettingController::class, 'show'])->name('site-settings.show');
+
+    // Orders Management
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+
+    // Tickets Management
+    Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
+    Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Admin\TicketController::class, 'reply'])->name('tickets.reply');
+    Route::put('/tickets/{ticket}/status', [\App\Http\Controllers\Admin\TicketController::class, 'updateStatus'])->name('tickets.update-status');
+    Route::post('/tickets/{ticket}/close', [\App\Http\Controllers\Admin\TicketController::class, 'close'])->name('tickets.close');
 
     // Super Admin Only Routes
     Route::middleware('super_admin')->group(function () {

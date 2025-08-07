@@ -145,29 +145,36 @@ class CheckoutController extends Controller
         }
 
         // ZarinPal Sandbox Configuration
-        $merchantId = '00000000-0000-0000-0000-000000000000'; // Valid Sandbox merchant ID
+        $merchantId = config('services.zarinpal.merchant_id'); // از کانفیگ خوانده شود
         $amount = $order->total; // In Toman
         $description = "پرداخت سفارش #{$order->order_number}";
         $callbackUrl = route('checkout.verify', $order->id);
 
         try {
             // Request payment from ZarinPal
-            $response = Http::timeout(30)->post('https://sandbox.zarinpal.com/pg/v4/payment/request.json', [
-                'MerchantID' => $merchantId,
-                'Amount' => $amount,
-                'Description' => $description,
-                'CallbackURL' => $callbackUrl,
-                'Email' => $order->customer_email ?? '',
-                'Mobile' => $order->customer_phone ?? ''
-            ]);
+            $payload = [
+                'merchant_id' => $merchantId,
+                'amount' => (int) $amount,
+                'description' => $description,
+                'callback_url' => $callbackUrl,
+                'email' => $order->customer_email ?? '',
+                'mobile' => $order->customer_phone ?? ''
+            ];
+            Log::info('Zarinpal payment request payload', $payload);
+            $zarinpalMode = config('services.zarinpal.mode', 'sandbox');
+            $zarinpalBaseUrl = $zarinpalMode === 'production'
+                ? 'https://www.zarinpal.com/pg/v4'
+                : 'https://sandbox.zarinpal.com/pg/v4';
+            $response = Http::timeout(30)->post("{$zarinpalBaseUrl}/payment/request.json", $payload);
+            Log::info('Zarinpal payment response', ['status' => $response->status(), 'body' => $response->body()]);
             if (!$response->successful()) {
                 return redirect()->back()->with('error', 'خطا در ارتباط با درگاه پرداخت. کد خطا: ' . $response->status());
             }
 
             $result = $response->json();
 
-            if (isset($result['Status']) && $result['Status'] == 100) {
-                $authority = $result['Authority'];
+            if (isset($result['data']['code']) && $result['data']['code'] == 100) {
+                $authority = $result['data']['authority'];
 
                 // Save authority for verification
                 $order->update([
@@ -176,11 +183,14 @@ class CheckoutController extends Controller
                 ]);
 
                 // Redirect to ZarinPal
-                return redirect()->away("https://sandbox.zarinpal.com/pg/v4/StartPay/{$authority}");
+                return redirect()->away("https://sandbox.zarinpal.com/pg/StartPay/{$authority}");
             } else {
                 $errorMessage = 'خطا در اتصال به درگاه پرداخت';
-                if (isset($result['Status'])) {
-                    $errorMessage .= ' (کد خطا: ' . $result['Status'] . ')';
+                if (isset($result['data']['code'])) {
+                    $errorMessage .= ' (کد خطا: ' . $result['data']['code'] . ')';
+                }
+                if (isset($result['errors']['message'])) {
+                    $errorMessage .= ' - ' . $result['errors']['message'];
                 }
                 return redirect()->back()->with('error', $errorMessage);
             }
@@ -205,31 +215,39 @@ class CheckoutController extends Controller
             $merchantId = '00000000-0000-0000-0000-000000000000';
 
             try {
-                $response = Http::post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json', [
-                    'MerchantID' => $merchantId,
-                    'Amount' => $order->total,
-                    'Authority' => $authority
-                ]);
+                $verifyPayload = [
+                    'merchant_id' => $merchantId,
+                    'amount' => (int) $order->total,
+                    'authority' => $authority
+                ];
+                Log::info('Zarinpal verify request payload', $verifyPayload);
+                $zarinpalMode = config('services.zarinpal.mode', 'sandbox');
+                $zarinpalBaseUrl = $zarinpalMode === 'production'
+                    ? 'https://www.zarinpal.com/pg/v4'
+                    : 'https://sandbox.zarinpal.com/pg/v4';
+                $response = Http::post("{$zarinpalBaseUrl}/payment/verify.json", $verifyPayload);
+                Log::info('Zarinpal verify response', ['status' => $response->status(), 'body' => $response->body()]);
 
                 $result = $response->json();
 
-                if ($result['Status'] == 100) {
+                if (isset($result['data']['code']) && $result['data']['code'] == 100) {
                     // Payment successful
                     $order->update([
                         'payment_status' => 'paid',
                         'status' => 'confirmed',
                         'paid_at' => now(),
-                        'payment_reference_id' => $result['RefID']
+                        'payment_reference_id' => $result['data']['ref_id'] ?? null,
+                        'card_pan' => $result['data']['card_pan'] ?? null,
+                        'payment_message' => $result['data']['message'] ?? null,
                     ]);
-
                     $paymentStatus = 'success';
                     $message = 'پرداخت با موفقیت انجام شد';
-                    $refId = $result['RefID'];
+                    $refId = $result['data']['ref_id'] ?? null;
                 } else {
                     // Payment failed
                     $order->update(['payment_status' => 'failed']);
                     $paymentStatus = 'failed';
-                    $message = 'پرداخت ناموفق بود';
+                    $message = $result['data']['message'] ?? 'پرداخت ناموفق بود';
                     $refId = null;
                 }
 

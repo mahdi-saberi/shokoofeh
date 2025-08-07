@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: laravel-app
+    image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
     container_name: laravel-app
     restart: unless-stopped
     working_dir: /var/www
@@ -28,7 +28,7 @@ services:
       "
   
   mysql:
-    image: mysql:8.0
+    image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
     container_name: mysql
     restart: unless-stopped
     environment:
@@ -44,7 +44,7 @@ services:
       - laravel
 
   nginx:
-    image: nginx:alpine
+    image: registry.hamdocker.ir/mahdi-saberi/nginx:alpine
     container_name: nginx
     restart: unless-stopped
     ports:

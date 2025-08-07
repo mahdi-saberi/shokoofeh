@@ -3,647 +3,533 @@
 @section('title', $product->title)
 
 @push('styles')
+<link href="{{ asset('css/shokoofeh-modern.css') }}" rel="stylesheet" />
 <style>
-    /* Breadcrumb */
-    .breadcrumb {
-        background: white;
-        padding: 1rem;
-        margin-bottom: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .breadcrumb-nav {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .breadcrumb-nav a {
-        color: #3498db;
-        text-decoration: none;
-    }
-
-    .breadcrumb-nav a:hover {
-        text-decoration: underline;
-    }
-
-    /* Product Section */
-    .product-section {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-        margin-bottom: 3rem;
-    }
-
     .product-detail {
+        padding: var(--space-xxl) 0;
+    }
+
+    .product-detail-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0;
+        gap: var(--space-xxl);
+        margin-bottom: var(--space-xxl);
     }
 
-    /* Image Section */
-    .product-image-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
+    .product-gallery {
+        background: var(--surface-color);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
     }
 
-    .image-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .main-image {
+    .product-main-image {
         width: 100%;
         height: 400px;
         object-fit: cover;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        transition: transform 0.3s ease;
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-lg);
+        box-shadow: var(--shadow-sm);
     }
 
-    .main-image:hover {
-        transform: scale(1.05);
-    }
-
-    .main-image-placeholder {
-        width: 100%;
-        height: 400px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 6rem;
-        color: white;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255,255,255,0.3);
-    }
-
-    .stock-indicator {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: white;
-        backdrop-filter: blur(10px);
-    }
-
-    .stock-available { background: rgba(40, 167, 69, 0.9); }
-    .stock-low { background: rgba(255, 193, 7, 0.9); }
-    .stock-out { background: rgba(220, 53, 69, 0.9); }
-
-    /* Product Info */
     .product-info {
-        padding: 3rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        background: var(--surface-color);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
     }
 
     .product-title {
-        font-size: 2.5rem;
+        font-size: var(--font-size-3xl);
         font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
-
-    .product-categories {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .product-tag {
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        border: 2px solid;
-    }
-
-    .product-tag.category {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-        border-color: transparent;
-    }
-
-    .product-tag.age-group {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        border-color: transparent;
-    }
-
-    .product-tag.game-type {
-        background: linear-gradient(135deg, #27ae60, #229954);
-        color: white;
-        border-color: transparent;
+        color: var(--text-primary);
+        margin-bottom: var(--space-lg);
+        line-height: 1.3;
     }
 
     .product-price {
-        font-size: 2.5rem;
+        font-size: var(--font-size-4xl);
         font-weight: 700;
-        margin: 2rem 0;
+        color: var(--primary-color);
+        margin-bottom: var(--space-xl);
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: var(--space-sm);
     }
 
-    .current-price {
-        color: #e74c3c;
+    .price-currency {
+        font-size: var(--font-size-lg);
+        color: var(--text-secondary);
+        font-weight: 500;
     }
 
-    .original-price {
-        color: #7f8c8d;
-        text-decoration: line-through;
-        font-size: 1.8rem;
+    .product-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--space-lg);
+        margin-bottom: var(--space-xl);
+        padding: var(--space-lg);
+        background: var(--background-color);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
     }
 
-    .discount-badge {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        font-size: 1rem;
+    .meta-item {
+        text-align: center;
+        padding: var(--space-md);
+    }
+
+    .meta-label {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-xs);
+        font-weight: 500;
+    }
+
+    .meta-value {
+        font-size: var(--font-size-base);
+        color: var(--text-primary);
         font-weight: 600;
     }
 
-    .stock-info {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 2rem 0;
-        border-right: 4px solid #3498db;
+    .product-description {
+        background: var(--background-color);
+        padding: var(--space-xl);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-xl);
+        border: 1px solid var(--border-color);
     }
 
-    .stock-info h4 {
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
-    }
-
-    .action-buttons {
+    .description-title {
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: var(--space-lg);
         display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
+        align-items: center;
+        gap: var(--space-sm);
     }
 
-    .btn {
-        padding: 1rem 2rem;
+    .description-text {
+        font-size: var(--font-size-base);
+        line-height: 1.8;
+        color: var(--text-secondary);
+    }
+
+    .product-actions {
+        display: flex;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-xl);
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: var(--space-lg) var(--space-xl);
         border: none;
-        border-radius: 12px;
-        font-size: 1.1rem;
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-lg);
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        text-align: center;
-        flex: 1;
+        transition: var(--transition-normal);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: var(--space-sm);
+        text-decoration: none;
     }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+    .btn-add-cart {
+        background: var(--gradient-primary);
         color: white;
-        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
     }
 
-    .btn-primary:hover {
+    .btn-add-cart:hover {
+        background: var(--primary-dark);
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        box-shadow: var(--shadow-toy);
     }
 
-    .btn-secondary {
-        background: #f8f9fa;
-        color: #2c3e50;
-        border: 2px solid #e9ecef;
+    .btn-wishlist {
+        background: var(--surface-color);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
     }
 
-    .btn-secondary:hover {
-        background: #e9ecef;
-        transform: translateY(-2px);
-    }
-
-    .btn:disabled {
-        background: #95a5a6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Description Section */
-    .description-section {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        padding: 3rem;
-        margin-bottom: 3rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-
-    .description-content {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #555;
-        text-align: justify;
-    }
-
-    /* Related Products */
-    .related-section {
-        margin-top: 4rem;
+    .btn-wishlist:hover {
+        border-color: var(--danger-color);
+        color: var(--danger-color);
+        transform: translateY(-3px);
     }
 
     .related-products {
+        margin-top: var(--space-xxl);
+    }
+
+    .related-title {
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: var(--space-xl);
+        text-align: center;
+        position: relative;
+    }
+
+    .related-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-sm);
+    }
+
+    .related-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--space-lg);
     }
 
     .related-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
+        background: var(--surface-color);
+        border-radius: var(--radius-lg);
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: var(--transition-normal);
         text-decoration: none;
-        color: inherit;
+        color: var(--text-primary);
     }
 
     .related-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
     }
 
     .related-image {
         width: 100%;
-        height: 200px;
+        height: 150px;
         object-fit: cover;
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-md);
     }
 
-    .related-image-placeholder {
-        width: 100%;
-        height: 200px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        color: white;
-    }
-
-    .related-info {
-        padding: 1.5rem;
-    }
-
-    .related-title {
-        font-size: 1.1rem;
+    .related-title-text {
+        font-size: var(--font-size-base);
         font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
+        margin-bottom: var(--space-sm);
+        line-height: 1.4;
     }
 
     .related-price {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #e74c3c;
+        font-size: var(--font-size-lg);
+        font-weight: 700;
+        color: var(--primary-color);
     }
 
-    /* Responsive Design */
+    .breadcrumb {
+        margin-bottom: var(--space-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: var(--transition-normal);
+    }
+
+    .breadcrumb a:hover {
+        color: var(--primary-dark);
+    }
+
+    .breadcrumb-separator {
+        color: var(--text-muted);
+    }
+
     @media (max-width: 768px) {
-        .product-detail {
+        .product-detail-grid {
             grid-template-columns: 1fr;
+            gap: var(--space-lg);
         }
 
-        .product-image-section {
-            padding: 2rem;
+        .product-actions {
+            flex-direction: column;
         }
 
-        .main-image,
-        .main-image-placeholder {
-            height: 300px;
-        }
-
-        .main-image-placeholder {
-            font-size: 4rem;
-        }
-
-        .product-info {
-            padding: 2rem;
+        .related-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         }
 
         .product-title {
-            font-size: 2rem;
-            text-align: center;
-        }
-
-        .product-categories {
-            justify-content: center;
+            font-size: var(--font-size-2xl);
         }
 
         .product-price {
-            font-size: 2rem;
-            justify-content: center;
-            flex-direction: column;
-            gap: 0.5rem;
+            font-size: var(--font-size-3xl);
         }
-
-        .action-buttons {
-            flex-direction: column;
-        }
-
-        .description-section {
-            padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-        }
-
-        .related-products {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .breadcrumb,
-        .product-section,
-        .description-section {
-            border-radius: 12px;
-            margin: 0.5rem 0;
-        }
-
-        .product-image-section {
-            padding: 1.5rem;
-        }
-
-        .main-image,
-        .main-image-placeholder {
-            height: 250px;
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-title {
-            font-size: 1.5rem;
-        }
-
-        .product-tag {
-            font-size: 0.7rem;
-            padding: 0.375rem 0.75rem;
-        }
-
-        .btn {
-            padding: 0.875rem 1.5rem;
-            font-size: 1rem;
-        }
-
-        .description-section {
-            padding: 1.5rem;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-        }
-
-        .description-content {
-            font-size: 1rem;
-        }
-    }
-
-    /* Touch optimizations */
-    @media (hover: none) and (pointer: coarse) {
-        .btn {
-            min-height: 48px;
-        }
-
-        .main-image:hover {
-            transform: none;
-        }
-
-        .related-card:hover {
-            transform: none;
-        }
-
-        .related-card:active {
-            transform: scale(0.98);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-    }
-
-    /* Loading animation */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .fade-in {
-        animation: fadeInUp 0.6s ease-out;
     }
 </style>
 @endpush
 
 @section('content')
-<div class="breadcrumb fade-in">
-    <div class="breadcrumb-nav">
-        <a href="{{ route('welcome') }}">صفحه اصلی</a>
-        <span>›</span>
-        <a href="{{ route('welcome') }}#products">فروشگاه</a>
-        <span>›</span>
+<div class="product-detail">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ route('welcome') }}">🏠 صفحه اصلی</a>
+        <span class="breadcrumb-separator">←</span>
+        @if($product->category)
+            <a href="{{ route('welcome', ['category' => $product->category->id]) }}">{{ $product->category->title }}</a>
+            <span class="breadcrumb-separator">←</span>
+        @endif
         <span>{{ $product->title }}</span>
-    </div>
-</div>
+    </nav>
 
-<section class="product-section fade-in">
-    <div class="product-detail">
-        <div class="product-image-section">
-            <div class="image-wrapper">
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}"
-                         alt="{{ $product->title }}"
-                         class="main-image">
-                @else
-                    <div class="main-image-placeholder">
-                        🧸
-                    </div>
-                @endif
-
-                @php
-                    $stockClass = $product->stock > 10 ? 'stock-available' : ($product->stock > 0 ? 'stock-low' : 'stock-out');
-                    $stockText = $product->stock > 10 ? 'موجود' : ($product->stock > 0 ? 'کم' : 'ناموجود');
-                @endphp
-                <div class="stock-indicator {{ $stockClass }}">
-                    {{ $stockText }}
-                </div>
-            </div>
+    <!-- Product Detail Grid -->
+    <div class="product-detail-grid fade-in-up">
+        <!-- Product Gallery -->
+        <div class="product-gallery">
+            <img src="{{ $product->image_url ?: 'https://via.placeholder.com/400x400?text=تصویر+محصول' }}"
+                 alt="{{ $product->title }}"
+                 class="product-main-image">
         </div>
 
+        <!-- Product Info -->
         <div class="product-info">
             <h1 class="product-title">{{ $product->title }}</h1>
 
-            <div class="product-categories">
-                @if(is_array($product->category))
-                    @foreach($product->category as $category)
-                        <span class="product-tag category">📂 {{ $category }}</span>
-                    @endforeach
-                @else
-                    <span class="product-tag category">📂 {{ $product->category }}</span>
-                @endif
-
-                @if(is_array($product->game_type))
-                    @foreach($product->game_type as $gameType)
-                        <span class="product-tag game-type">🎮 {{ $gameType }}</span>
-                    @endforeach
-                @else
-                    <span class="product-tag game-type">🎮 {{ $product->game_type }}</span>
-                @endif
-
-                @if(is_array($product->age_group))
-                    @foreach($product->age_group as $age)
-                        <span class="product-tag age-group">👶 {{ $age }}</span>
-                    @endforeach
-                @else
-                    <span class="product-tag age-group">👶 {{ $product->age_group }}</span>
-                @endif
+            <div class="product-price">
+                <span>{{ number_format($product->price) }}</span>
+                <span class="price-currency">تومان</span>
             </div>
 
-            @if($product->price)
-                <div class="product-price">
-                    @if($product->hasDiscount())
-                        <span class="current-price">{{ number_format($product->discounted_price) }} تومان</span>
-                        <span class="original-price">{{ number_format($product->price) }} تومان</span>
-                        <span class="discount-badge">{{ $product->discount_percentage }}% تخفیف</span>
-                    @else
-                        <span class="current-price">{{ number_format($product->price) }} تومان</span>
-                    @endif
+            <!-- Product Meta -->
+            <div class="product-meta">
+                @if($product->category)
+                    <div class="meta-item">
+                        <div class="meta-label">🎯 دسته‌بندی</div>
+                        <div class="meta-value">{{ $product->category->title ?? 'نامشخص' }}</div>
+                    </div>
+                @endif
+
+                @if($product->age_group_object)
+                    <div class="meta-item">
+                        <div class="meta-label">👶 رده سنی</div>
+                        <div class="meta-value">{{ $product->age_group_object->title ?? 'نامشخص' }}</div>
+                    </div>
+                @endif
+
+                @if($product->game_type_object)
+                    <div class="meta-item">
+                        <div class="meta-label">🎮 نوع بازی</div>
+                        <div class="meta-value">{{ $product->game_type_object->title ?? 'نامشخص' }}</div>
+                    </div>
+                @endif
+
+                <div class="meta-item">
+                    <div class="meta-label">📦 موجودی</div>
+                    <div class="meta-value">{{ $product->stock > 0 ? 'موجود' : 'ناموجود' }}</div>
                 </div>
-            @endif
-
-            <div class="stock-info">
-                <h4>📦 اطلاعات موجودی</h4>
-                <p>موجودی فعلی: <strong>{{ $product->stock }} عدد</strong></p>
-                <p>وضعیت: <strong>{{ $stockText }}</strong></p>
-                @if($product->stock > 0 && $product->stock <= 10)
-                    <p style="color: #e67e22;">⚠️ تعداد محدود! عجله کنید!</p>
-                @endif
             </div>
 
-            <div class="action-buttons">
-                @if($product->stock > 0)
-                    <button class="btn btn-primary add-to-cart-btn"
-                            onclick="addToCart({{ $product->id }}, {{ json_encode($product->title) }})"
-                            data-product-id="{{ $product->id }}"
-                            data-product-name="{{ $product->title }}">
-                        🛒 افزودن به سبد خرید
-                    </button>
-                @else
-                    <button class="btn" disabled>
-                        ❌ ناموجود
-                    </button>
-                @endif
-                <a href="{{ route('welcome') }}" class="btn btn-secondary">
-                    ↩️ بازگشت به فروشگاه
-                </a>
+            <!-- Product Actions -->
+            <div class="product-actions">
+                <button class="action-btn btn-add-cart" onclick="addToCart({{ $product->id }})">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>افزودن به سبد خرید</span>
+                </button>
+
+                <button class="action-btn btn-wishlist" onclick="toggleWishlist({{ $product->id }})">
+                    <i class="far fa-heart"></i>
+                    <span>علاقه‌مندی</span>
+                </button>
+            </div>
+
+            <!-- Social Sharing -->
+            <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg); background: var(--background-color); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <span style="font-weight: 600; color: var(--text-primary);">📤 اشتراک‌گذاری:</span>
+                <button onclick="shareOnTelegram()" style="background: #0088cc; color: white; border: none; padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); cursor: pointer; font-size: var(--font-size-sm);">
+                    <i class="fab fa-telegram"></i> تلگرام
+                </button>
+                <button onclick="shareOnWhatsApp()" style="background: #25d366; color: white; border: none; padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); cursor: pointer; font-size: var(--font-size-sm);">
+                    <i class="fab fa-whatsapp"></i> واتساپ
+                </button>
             </div>
         </div>
     </div>
-</section>
 
-@if($product->description)
-    <section class="description-section fade-in">
-        <h2 class="section-title">📝 توضیحات محصول</h2>
-        <div class="description-content">
-            {!! $product->description !!}
+    <!-- Product Description -->
+    @if($product->description)
+        <div class="product-description fade-in-up">
+            <h2 class="description-title">
+                <span>📝</span>
+                <span>توضیحات محصول</span>
+            </h2>
+            <div class="description-text">
+                {!! nl2br(e($product->description)) !!}
+            </div>
         </div>
-    </section>
-@endif
+    @endif
 
-@if($relatedProducts->count() > 0)
-    <section class="related-section fade-in">
-        <h2 class="section-title">🔗 محصولات مشابه</h2>
-        <div class="related-products">
-            @foreach($relatedProducts as $related)
-                <a href="{{ route('product.show', $related->id) }}" class="related-card">
-                    @if($related->image)
-                        <img src="{{ asset('storage/' . $related->image) }}"
-                             alt="{{ $related->title }}"
+    <!-- Related Products -->
+    @if($relatedProducts && $relatedProducts->count() > 0)
+        <section class="related-products fade-in-up">
+            <h2 class="related-title">🔗 محصولات مرتبط</h2>
+            <div class="related-grid">
+                @foreach($relatedProducts as $relatedProduct)
+                    <a href="{{ route('product.show', $relatedProduct->id) }}" class="related-card">
+                        <img src="{{ $relatedProduct->image_url ?: 'https://via.placeholder.com/200x150?text=تصویر+محصول' }}"
+                             alt="{{ $relatedProduct->title }}"
                              class="related-image">
-                    @else
-                        <div class="related-image-placeholder">
-                            🧸
-                        </div>
-                    @endif
-                    <div class="related-info">
-                        <h3 class="related-title">{{ $related->title }}</h3>
-                        @if($related->price)
-                            <div class="related-price">
-                                @if($related->hasDiscount())
-                                    {{ number_format($related->discounted_price) }} تومان
-                                @else
-                                    {{ number_format($related->price) }} تومان
-                                @endif
-                            </div>
-                        @endif
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </section>
-@endif
+                        <h3 class="related-title-text">{{ Str::limit($relatedProduct->title, 50) }}</h3>
+                        <div class="related-price">{{ number_format($relatedProduct->price) }} تومان</div>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+</div>
 @endsection
 
 @push('scripts')
 <script>
-    // Add fade-in animation on scroll
-    document.addEventListener('DOMContentLoaded', function() {
-        const elements = document.querySelectorAll('.fade-in');
+    // Add to cart function
+    function addToCart(productId) {
+        const button = event.target.closest('.btn-add-cart');
+        button.classList.add('loading');
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = '0.1s';
-                    entry.target.classList.add('fade-in');
-                }
-            });
+        fetch('{{ route("cart.add") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMessage('محصول به سبد خرید اضافه شد! 🎉', 'success');
+                updateCartCount();
+            } else {
+                showMessage(data.message || 'خطایی رخ داد', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('خطایی رخ داد', 'error');
+        })
+        .finally(() => {
+            button.classList.remove('loading');
         });
+    }
 
-        elements.forEach(element => {
-            observer.observe(element);
+    // Toggle wishlist function
+    function toggleWishlist(productId) {
+        const button = event.target.closest('.btn-wishlist');
+        const icon = button.querySelector('i');
+
+        if (icon.classList.contains('far')) {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            button.style.color = '#FF4757';
+            showMessage('به علاقه‌مندی‌ها اضافه شد! ❤️', 'success');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            button.style.color = '';
+            showMessage('از علاقه‌مندی‌ها حذف شد', 'info');
+        }
+    }
+
+    // Share functions
+    function shareOnTelegram() {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('{{ $product->title }} - فروشگاه شکوفه');
+        window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+    }
+
+    function shareOnWhatsApp() {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('{{ $product->title }} - فروشگاه شکوفه');
+        window.open(`https://wa.me/?text=${text} ${url}`, '_blank');
+    }
+
+    // Update cart count
+    function updateCartCount() {
+        fetch('{{ route("cart.count") }}', {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+                cartCount.textContent = data.count || 0;
+            }
+        })
+        .catch(error => console.error('Error updating cart count:', error));
+    }
+
+    // Show message function
+    function showMessage(message, type = 'info') {
+        const messageEl = document.createElement('div');
+        messageEl.className = `message-toast message-${type}`;
+        messageEl.textContent = message;
+        messageEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: ${type === 'success' ? '#2ED573' : type === 'error' ? '#FF4757' : '#4ECDC4'};
+            color: white;
+            border-radius: 0.5rem;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 500;
+        `;
+
+        document.body.appendChild(messageEl);
+
+        setTimeout(() => {
+            messageEl.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => messageEl.remove(), 300);
+        }, 3000);
+    }
+
+    // Scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = '0.1s';
+                entry.target.classList.add('fade-in-up');
+            }
         });
+    }, observerOptions);
+
+    // Observe elements
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
     });
+
+    // Initialize cart count
+    updateCartCount();
 </script>
 @endpush
 

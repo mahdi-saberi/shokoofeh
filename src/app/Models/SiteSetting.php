@@ -21,7 +21,11 @@ class SiteSetting extends Model
         'footer_text',
         'copyright_text',
         'meta_keywords',
-        'meta_description'
+        'meta_description',
+        'header_announcement_enabled',
+        'header_announcement_text',
+        'header_announcement_bg_color',
+        'header_announcement_text_color'
     ];
 
     /**

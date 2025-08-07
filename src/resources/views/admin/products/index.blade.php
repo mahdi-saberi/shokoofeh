@@ -718,24 +718,24 @@
                                 <td>
                                     @if(is_array($product->category) && count($product->category) > 0)
                                         @foreach($product->category as $category)
-                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $category }}</span>
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $category->title }}</span>
                                         @endforeach
                                     @elseif($product->category)
-                                        <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category }}</span>
+                                        <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category->title }}</span>
                                     @else
                                         <span class="table-undefined">تعیین نشده</span>
                                     @endif
                                 </td>
                                 <td>
-                                    @if(is_array($product->game_type) && count($product->game_type) > 0)
+                                    {{-- @if(is_array($product->game_type) && count($product->game_type) > 0)
                                         @foreach($product->game_type as $gameType)
-                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $gameType }}</span>
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $gameType->game_type_title }}</span>
                                         @endforeach
-                                    @elseif($product->game_type)
-                                        <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $product->game_type }}</span>
-                                    @else
+                                    @elseif($product->game_type) --}}
+                                        <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $product->game_type_title }}</span>
+                                    {{-- @else
                                         <span class="table-undefined">تعیین نشده</span>
-                                    @endif
+                                    @endif --}}
                                 </td>
                                 <td>
                                     @if(is_array($product->age_group) && count($product->age_group) > 0)

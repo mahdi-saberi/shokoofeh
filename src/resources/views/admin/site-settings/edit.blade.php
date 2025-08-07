@@ -3,6 +3,8 @@
 @section('title', 'تنظیمات سایت')
 
 @push('styles')
+<!-- Quill Editor CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
     .settings-card {
         background: white;
@@ -86,6 +88,128 @@
         color: #6c757d;
         margin-top: 0.25rem;
     }
+
+    .color-picker {
+        width: 100%;
+        height: 40px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #667eea;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    /* Quill Editor Styles */
+    .ql-editor {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Vazirmatn', sans-serif;
+        font-size: 14px;
+        min-height: 150px;
+        line-height: 1.6;
+        padding: 1rem;
+    }
+
+    .ql-toolbar {
+        direction: rtl;
+        text-align: right;
+        border-radius: 8px 8px 0 0;
+        border: 2px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+        background: #f8f9fa;
+    }
+
+    .ql-container {
+        border-radius: 0 0 8px 8px;
+        border: 2px solid #e9ecef;
+        border-top: 1px solid #e9ecef;
+        background: white;
+    }
+
+    .ql-container:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .ql-toolbar .ql-stroke {
+        stroke: #495057;
+    }
+
+    .ql-toolbar .ql-fill {
+        fill: #495057;
+    }
+
+    .ql-toolbar .ql-picker {
+        color: #495057;
+    }
+
+    .ql-toolbar button:hover .ql-stroke,
+    .ql-toolbar button:focus .ql-stroke {
+        stroke: #667eea;
+    }
+
+    .ql-toolbar button:hover .ql-fill,
+    .ql-toolbar button:focus .ql-fill {
+        fill: #667eea;
+    }
+
+    .ql-toolbar button.ql-active .ql-stroke {
+        stroke: #667eea;
+    }
+
+    .ql-toolbar button.ql-active .ql-fill {
+        fill: #667eea;
+    }
+
+    .ql-toolbar .ql-picker-options {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 </style>
 @endpush
 
@@ -168,6 +292,67 @@
                                            id="site_logo" name="site_logo" accept="image/*">
                                     <div class="help-text">فرمت‌های مجاز: JPG, PNG, SVG - حداکثر 2MB</div>
                                     @error('site_logo')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header Announcement -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3 style="margin: 0;">📢 تنظیمات هدر سایت</h3>
+                    </div>
+                    <div class="settings-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label d-flex align-items-center">
+                                        <span>فعال‌سازی نوار اعلان هدر</span>
+                                        <label class="switch ms-3">
+                                            <input type="checkbox" name="header_announcement_enabled" value="1"
+                                                   {{ old('header_announcement_enabled', $settings->header_announcement_enabled) ? 'checked' : '' }}>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </label>
+                                    <div class="help-text">این گزینه نوار اعلان بالای سایت را فعال یا غیرفعال می‌کند</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="header_announcement_text" class="form-label">متن اعلان هدر</label>
+                                    <textarea class="form-control @error('header_announcement_text') is-invalid @enderror"
+                                              id="header_announcement_text" name="header_announcement_text" rows="3"
+                                              placeholder="🎉 ویژه عید نوروز - تخفیف ویژه تمام اسباب بازی‌ها تا ۵۰٪ 🎁">{{ old('header_announcement_text', $settings->header_announcement_text) }}</textarea>
+                                    <div class="help-text">متن اعلانی که در نوار بالای سایت نمایش داده می‌شود</div>
+                                    @error('header_announcement_text')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="header_announcement_bg_color" class="form-label">رنگ پس‌زمینه</label>
+                                    <input type="color" class="color-picker @error('header_announcement_bg_color') is-invalid @enderror"
+                                           id="header_announcement_bg_color" name="header_announcement_bg_color"
+                                           value="{{ old('header_announcement_bg_color', $settings->header_announcement_bg_color ?? '#667eea') }}">
+                                    @error('header_announcement_bg_color')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="header_announcement_text_color" class="form-label">رنگ متن</label>
+                                    <input type="color" class="color-picker @error('header_announcement_text_color') is-invalid @enderror"
+                                           id="header_announcement_text_color" name="header_announcement_text_color"
+                                           value="{{ old('header_announcement_text_color', $settings->header_announcement_text_color ?? '#ffffff') }}">
+                                    @error('header_announcement_text_color')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -358,7 +543,63 @@
 </div>
 
 @push('scripts')
+<!-- Quill Editor -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
+// Quill Editor Configuration for RTL support
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Quill for each textarea
+    const editors = ['site_description', 'footer_text', 'contact_address'];
+
+    editors.forEach(function(editorId) {
+        const textarea = document.getElementById(editorId);
+        if (textarea) {
+            // Create a div for Quill
+            const quillContainer = document.createElement('div');
+            quillContainer.id = 'quill-' + editorId;
+            quillContainer.style.marginBottom = '1rem';
+
+            // Insert the container before the textarea
+            textarea.parentNode.insertBefore(quillContainer, textarea);
+
+            // Hide the original textarea
+            textarea.style.display = 'none';
+
+            // Initialize Quill
+            const quill = new Quill('#quill-' + editorId, {
+                theme: 'snow',
+                direction: 'rtl',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        ['link'],
+                        ['clean']
+                    ],
+                    history: {
+                        delay: 500,
+                        maxStack: 100,
+                        userOnly: true
+                    }
+                },
+                placeholder: 'لطفاً متن را در اینجا وارد کنید...',
+                formats: ['bold', 'italic', 'underline', 'list', 'bullet', 'align', 'link']
+            });
+
+            // Set initial content
+            if (textarea.value) {
+                quill.root.innerHTML = textarea.value;
+            }
+
+            // Update textarea on content change
+            quill.on('text-change', function() {
+                textarea.value = quill.root.innerHTML;
+            });
+        }
+    });
+});
+
 // Logo preview
 document.getElementById('site_logo').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -387,13 +628,15 @@ document.getElementById('site_logo').addEventListener('change', function(e) {
 
 // Character counter for meta description
 const metaDescInput = document.getElementById('meta_description');
-const metaHelpText = metaDescInput.nextElementSibling;
+if (metaDescInput) {
+    const metaHelpText = metaDescInput.nextElementSibling;
 
-metaDescInput.addEventListener('input', function() {
-    const length = this.value.length;
-    const color = length > 160 ? '#dc3545' : length > 140 ? '#ffc107' : '#28a745';
-    metaHelpText.innerHTML = `حداکثر ۱۶۰ کاراکتر توصیه می‌شود (فعلی: <span style="color: ${color}">${length}</span>)`;
-});
+    metaDescInput.addEventListener('input', function() {
+        const length = this.value.length;
+        const color = length > 160 ? '#dc3545' : length > 140 ? '#ffc107' : '#28a745';
+        metaHelpText.innerHTML = `حداکثر ۱۶۰ کاراکتر توصیه می‌شود (فعلی: <span style="color: ${color}">${length}</span>)`;
+    });
+}
 </script>
 @endpush
 @endsection

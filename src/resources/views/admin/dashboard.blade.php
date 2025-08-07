@@ -456,7 +456,7 @@
                                 </td>
                                 <td>
                                     @if(is_array($product->category) ? count($product->category) > 0 : !empty($product->category))
-                                        {{ is_array($product->category) ? implode(', ', $product->category) : $product->category }}
+                                        {{ is_array($product->category) ? implode(', ', $product->category->title) : $product->category->title }}
                                     @else
                                         <span class="table-undefined">تعیین نشده</span>
                                     @endif

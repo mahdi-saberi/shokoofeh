@@ -66,6 +66,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is customer
+     */
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
+    }
+
+    /**
+     * Check if user has admin privileges (admin or super_admin)
+     */
+    public function hasAdminPrivileges(): bool
+    {
+        return in_array($this->role, ['admin', 'super_admin']);
+    }
+
+    /**
      * Check if user is active
      */
     public function isActive(): bool
@@ -82,6 +98,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Orders relationship for customers
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_email', 'email');
+    }
+
+    /**
      * Get role display name
      */
     public function getRoleDisplayAttribute(): string
@@ -89,6 +113,7 @@ class User extends Authenticatable
         return match($this->role) {
             'super_admin' => 'مدیر کل',
             'admin' => 'مدیر',
+            'customer' => 'مشتری',
             default => 'کاربر'
         };
     }
@@ -107,5 +132,13 @@ class User extends Authenticatable
     public function scopeAdmins($query)
     {
         return $query->whereIn('role', ['admin', 'super_admin']);
+    }
+
+    /**
+     * Scope for customers only
+     */
+    public function scopeCustomers($query)
+    {
+        return $query->where('role', 'customer');
     }
 }

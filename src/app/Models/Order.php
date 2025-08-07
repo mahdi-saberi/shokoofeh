@@ -29,7 +29,10 @@ class Order extends Model
         'payment_reference_id',
         'paid_at',
         'notes',
-        'admin_notes'
+        'admin_notes',
+        'card_pan',
+        'payment_message',
+        'tracking_code',
     ];
 
     protected $casts = [
@@ -54,6 +57,14 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Alias for items() relationship
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->items();
     }
 
     /**
