@@ -43,7 +43,23 @@ class SiteSettingController extends Controller
             'header_announcement_enabled' => 'boolean',
             'header_announcement_text' => 'nullable|string|max:1000',
             'header_announcement_bg_color' => 'nullable|string|max:7',
-            'header_announcement_text_color' => 'nullable|string|max:7'
+            'header_announcement_text_color' => 'nullable|string|max:7',
+            'feature_box_1_title' => 'nullable|string|max:255',
+            'feature_box_1_description' => 'nullable|string|max:500',
+            'feature_box_1_icon' => 'nullable|string|max:50',
+            'feature_box_1_enabled' => 'boolean',
+            'feature_box_2_title' => 'nullable|string|max:255',
+            'feature_box_2_description' => 'nullable|string|max:500',
+            'feature_box_2_icon' => 'nullable|string|max:50',
+            'feature_box_2_enabled' => 'boolean',
+            'feature_box_3_title' => 'nullable|string|max:255',
+            'feature_box_3_description' => 'nullable|string|max:500',
+            'feature_box_3_icon' => 'nullable|string|max:50',
+            'feature_box_3_enabled' => 'boolean',
+            'feature_box_4_title' => 'nullable|string|max:255',
+            'feature_box_4_description' => 'nullable|string|max:500',
+            'feature_box_4_icon' => 'nullable|string|max:50',
+            'feature_box_4_enabled' => 'boolean'
         ]);
 
         $settings = SiteSetting::current();

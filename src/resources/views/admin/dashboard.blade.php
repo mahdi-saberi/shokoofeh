@@ -374,6 +374,128 @@
      .table-container::-webkit-scrollbar-thumb:hover {
          background: linear-gradient(135deg, #5a6fd8, #6a4190);
      }
+
+     /* استایل نمودار */
+     .chart-container {
+         position: relative;
+         height: 400px;
+         margin: 20px 0;
+         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+         border-radius: 15px;
+         padding: 20px;
+         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+     }
+
+     .chart-container canvas {
+         max-height: 100% !important;
+         width: 100% !important;
+     }
+
+     /* انیمیشن نمودار */
+     .chart-container {
+         animation: fadeInUp 0.8s ease-out;
+     }
+
+     @keyframes fadeInUp {
+         from {
+             opacity: 0;
+             transform: translateY(30px);
+         }
+         to {
+             opacity: 1;
+             transform: translateY(0);
+         }
+     }
+
+     /* افکت hover برای نمودار */
+     .chart-container:hover {
+         transform: translateY(-5px);
+         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+         transition: all 0.3s ease;
+     }
+
+     /* استایل کارت‌های آمار اضافی */
+     .stats-grid-secondary {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+         gap: 1.5rem;
+         margin: 2rem 0;
+     }
+
+     .stat-card-secondary {
+         background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+         border-radius: 15px;
+         padding: 1.5rem;
+         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+         border: 1px solid #e9ecef;
+         transition: all 0.3s ease;
+         display: flex;
+         align-items: center;
+         gap: 1rem;
+     }
+
+     .stat-card-secondary:hover {
+         transform: translateY(-5px);
+         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+         border-color: #667eea;
+     }
+
+     .stat-icon {
+         font-size: 2.5rem;
+         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         background-clip: text;
+         filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+     }
+
+     .stat-content {
+         flex: 1;
+     }
+
+     .stat-card-secondary .stat-number {
+         font-size: 1.8rem;
+         font-weight: 700;
+         color: #2c3e50;
+         margin-bottom: 0.5rem;
+         font-family: 'Instrument Sans', sans-serif;
+     }
+
+     .stat-card-secondary .stat-label {
+         color: #6c757d;
+         font-size: 0.9rem;
+         font-weight: 500;
+     }
+
+     /* انیمیشن ورود کارت‌های آمار */
+     .stat-card-secondary {
+         animation: fadeInUp 0.6s ease-out backwards;
+     }
+
+     .stat-card-secondary:nth-child(1) { animation-delay: 0.1s; }
+     .stat-card-secondary:nth-child(2) { animation-delay: 0.2s; }
+     .stat-card-secondary:nth-child(3) { animation-delay: 0.3s; }
+     .stat-card-secondary:nth-child(4) { animation-delay: 0.4s; }
+
+     /* responsive برای کارت‌های آمار */
+     @media (max-width: 768px) {
+         .stats-grid-secondary {
+             grid-template-columns: 1fr;
+             gap: 1rem;
+         }
+
+         .stat-card-secondary {
+             padding: 1rem;
+         }
+
+         .stat-icon {
+             font-size: 2rem;
+         }
+
+         .stat-card-secondary .stat-number {
+             font-size: 1.5rem;
+         }
+     }
  </style>
 @endpush
 
@@ -389,16 +511,92 @@
             <div class="stat-label">تعداد محصولات</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ \App\Models\AgeGroup::count() ?? 0 }}</div>
-            <div class="stat-label">گروه‌های سنی</div>
+            <div class="stat-number">{{ $totalOrders }}</div>
+            <div class="stat-label">کل سفارش‌ها</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ \App\Models\GameType::count() ?? 0 }}</div>
-            <div class="stat-label">انواع بازی</div>
+            <div class="stat-number">{{ format_currency($totalRevenue) }}</div>
+            <div class="stat-label">درآمد کل (پرداخت شده)</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ \App\Models\Category::count() ?? 0 }}</div>
-            <div class="stat-label">دسته‌بندی‌ها</div>
+            <div class="stat-number">{{ $pendingOrders }}</div>
+            <div class="stat-label">سفارش‌های در انتظار</div>
+        </div>
+    </div>
+
+    <!-- آمار اضافی -->
+    <div class="stats-grid-secondary">
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ $completedOrders }}</div>
+                <div class="stat-label">سفارش‌های تکمیل شده</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ format_currency($todayRevenue) }}</div>
+                <div class="stat-label">درآمد امروز</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ format_currency($weekRevenue) }}</div>
+                <div class="stat-label">درآمد این هفته</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ format_currency($monthRevenue) }}</div>
+                <div class="stat-label">درآمد این ماه</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار سفارش‌های زمانی -->
+    <div class="stats-grid-secondary">
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ $todayOrders }}</div>
+                <div class="stat-label">سفارش‌های امروز (پرداخت شده)</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ $weekOrders }}</div>
+                <div class="stat-label">سفارش‌های این هفته (پرداخت شده)</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ $monthOrders }}</div>
+                <div class="stat-label">سفارش‌های این ماه (پرداخت شده)</div>
+            </div>
+        </div>
+        <div class="stat-card-secondary">
+            <div class="stat-icon">📋</div>
+            <div class="stat-content">
+                <div class="stat-number">{{ $totalOrders > 0 ? number_format(($completedOrders / $totalOrders) * 100, 1) : 0 }}%</div>
+                <div class="stat-label">نرخ تکمیل سفارش</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نمودار سفارش‌ها -->
+    <div class="card">
+        <div class="card-header">
+            <h3>📊 نمودار سفارش‌های پرداخت شده (۳۰ روز گذشته)</h3>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+                <canvas id="ordersChart" width="400" height="200"></canvas>
+            </div>
         </div>
     </div>
 
@@ -456,7 +654,15 @@
                                 </td>
                                 <td>
                                     @if(is_array($product->category) ? count($product->category) > 0 : !empty($product->category))
-                                        {{ is_array($product->category) ? implode(', ', $product->category->title) : $product->category->title }}
+                                        @if(is_array($product->category))
+                                            {{ implode(', ', $product->category) }}
+                                        @elseif(is_string($product->category))
+                                            {{ $product->category }}
+                                        @elseif(is_object($product->category))
+                                            {{ $product->category->title ?? 'نامشخص' }}
+                                        @else
+                                            نامشخص
+                                        @endif
                                     @else
                                         <span class="table-undefined">تعیین نشده</span>
                                     @endif
@@ -541,4 +747,197 @@
             @endif
         </div>
     </div>
+
+    @push('scripts')
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // داده‌های نمودار از سرور
+        const chartData = @json($orders);
+
+        // تبدیل تاریخ‌ها به فرمت فارسی
+        const persianDates = chartData.map(item => {
+            const date = new Date(item.date);
+            return date.toLocaleDateString('fa-IR', {
+                month: 'short',
+                day: 'numeric'
+            });
+        });
+
+        // داده‌های نمودار
+        const orderCounts = chartData.map(item => item.count);
+        const orderAmounts = chartData.map(item => parseFloat(item.total_amount || 0));
+
+        // ایجاد نمودار
+        const ctx = document.getElementById('ordersChart').getContext('2d');
+        const ordersChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: persianDates,
+                datasets: [
+                    {
+                        label: 'تعداد سفارش‌ها',
+                        data: orderCounts,
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'مبلغ سفارش‌ها (میلیون تومان)',
+                        data: orderAmounts.map(amount => (amount / 1000000).toFixed(1)),
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(118, 75, 162, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '📊 آمار سفارش‌های پرداخت شده در ۳۰ روز گذشته',
+                        font: {
+                            size: 16,
+                            family: 'Instrument Sans, sans-serif'
+                        },
+                        color: '#2c3e50'
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(44, 62, 80, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: 'rgba(102, 126, 234, 0.5)',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.datasetIndex === 0) {
+                                    return `تعداد سفارش: ${context.parsed.y} عدد`;
+                                } else {
+                                    return `مبلغ: ${context.parsed.y} میلیون تومان`;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'تاریخ',
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: false
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'تعداد سفارش‌ها',
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 10
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'مبلغ (میلیون تومان)',
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: 'Instrument Sans, sans-serif',
+                                size: 10
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverBackgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        hoverBorderColor: '#fff'
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+
+        // انیمیشن ورود نمودار
+        setTimeout(() => {
+            ordersChart.update('none');
+        }, 500);
+    </script>
+    @endpush
 @endsection

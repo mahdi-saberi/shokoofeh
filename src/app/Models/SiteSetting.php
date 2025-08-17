@@ -25,7 +25,23 @@ class SiteSetting extends Model
         'header_announcement_enabled',
         'header_announcement_text',
         'header_announcement_bg_color',
-        'header_announcement_text_color'
+        'header_announcement_text_color',
+        'feature_box_1_title',
+        'feature_box_1_description',
+        'feature_box_1_icon',
+        'feature_box_1_enabled',
+        'feature_box_2_title',
+        'feature_box_2_description',
+        'feature_box_2_icon',
+        'feature_box_2_enabled',
+        'feature_box_3_title',
+        'feature_box_3_description',
+        'feature_box_3_icon',
+        'feature_box_3_enabled',
+        'feature_box_4_title',
+        'feature_box_4_description',
+        'feature_box_4_icon',
+        'feature_box_4_enabled'
     ];
 
     /**
@@ -59,7 +75,23 @@ class SiteSetting extends Model
                     'site_description' => 'بهترین اسباب بازی‌ها برای کودکان عزیز',
                     'footer_text' => 'فروشگاه شکوفه، مرجع خرید اسباب بازی کودکان',
                     'copyright_text' => 'تمامی حقوق محفوظ است',
-                    'working_hours' => 'شنبه تا پنجشنبه: ۹ صبح تا ۱۸ عصر'
+                    'working_hours' => 'شنبه تا پنجشنبه: ۹ صبح تا ۱۸ عصر',
+                    'feature_box_1_title' => 'ارسال رایگان',
+                    'feature_box_1_description' => 'برای خریدهای بالای ۵۰۰ هزار تومان در سراسر کشور',
+                    'feature_box_1_icon' => '🚚',
+                    'feature_box_1_enabled' => true,
+                    'feature_box_2_title' => 'خرید امن',
+                    'feature_box_2_description' => 'پرداخت آنلاین با بالاترین سطح امنیت',
+                    'feature_box_2_icon' => '🔒',
+                    'feature_box_2_enabled' => true,
+                    'feature_box_3_title' => 'ضمانت کیفیت',
+                    'feature_box_3_description' => 'تمام محصولات دارای گارانتی اصالت و کیفیت',
+                    'feature_box_3_icon' => '🏆',
+                    'feature_box_3_enabled' => true,
+                    'feature_box_4_title' => 'پشتیبانی ۲۴/۷',
+                    'feature_box_4_description' => 'آماده پاسخگویی در تمام ساعات شبانه‌روز',
+                    'feature_box_4_icon' => '📞',
+                    'feature_box_4_enabled' => true
                 ]);
             }
 
@@ -134,5 +166,47 @@ class SiteSetting extends Model
         }
 
         return $links;
+    }
+
+    /**
+     * Get all feature boxes as array
+     */
+    public function getFeatureBoxesAttribute(): array
+    {
+        $boxes = [];
+
+        if ($this->feature_box_1_enabled) {
+            $boxes[] = [
+                'title' => $this->feature_box_1_title ?: 'ارسال رایگان',
+                'description' => $this->feature_box_1_description ?: 'برای خریدهای بالای ۵۰۰ هزار تومان در سراسر کشور',
+                'icon' => $this->feature_box_1_icon ?: '🚚'
+            ];
+        }
+
+        if ($this->feature_box_2_enabled) {
+            $boxes[] = [
+                'title' => $this->feature_box_2_title ?: 'خرید امن',
+                'description' => $this->feature_box_2_description ?: 'پرداخت آنلاین با بالاترین سطح امنیت',
+                'icon' => $this->feature_box_2_icon ?: '🔒'
+            ];
+        }
+
+        if ($this->feature_box_3_enabled) {
+            $boxes[] = [
+                'title' => $this->feature_box_3_title ?: 'ضمانت کیفیت',
+                'description' => $this->feature_box_3_description ?: 'تمام محصولات دارای گارانتی اصالت و کیفیت',
+                'icon' => $this->feature_box_3_icon ?: '🏆'
+            ];
+        }
+
+        if ($this->feature_box_4_enabled) {
+            $boxes[] = [
+                'title' => $this->feature_box_4_title ?: 'پشتیبانی ۲۴/۷',
+                'description' => $this->feature_box_4_description ?: 'آماده پاسخگویی در تمام ساعات شبانه‌روز',
+                'icon' => $this->feature_box_4_icon ?: '📞'
+            ];
+        }
+
+        return $boxes;
     }
 }

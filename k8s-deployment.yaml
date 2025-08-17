@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-app
+  labels:
+    app: laravel-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-app
+  template:
+    metadata:
+      labels:
+        app: laravel-app
+    spec:
+      initContainers:
+      - name: copy-source
+        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+        command: ['/bin/sh', '-c']
+        args:
+        - |
+          cp -r /var/www/* /shared-source/
+          chown -R www:www /shared-source/
+          chmod -R 775 /shared-source/storage
+          chmod -R 775 /shared-source/bootstrap/cache
+        volumeMounts:
+        - name: shared-source
+          mountPath: /shared-source
+      containers:
+      - name: app
+        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: shared-source
+          mountPath: /var/www
+        - name: app-storage
+          mountPath: /var/www/storage
+        env:
+        - name: DB_HOST
+          value: "mysql"
+        - name: DB_DATABASE
+          value: "toyshop"
+        - name: DB_USERNAME
+          value: "laravel"
+        - name: DB_PASSWORD
+          value: "laravel"
+      - name: nginx
+        image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: shared-source
+          mountPath: /var/www
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+      volumes:
+      - name: shared-source
+        emptyDir: {}
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: app-storage-pvc
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-service
+spec:
+  selector:
+    app: laravel-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-storage-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    server {
+        listen 80;
+        index index.php index.html;
+        server_name localhost;
+        root /var/www/public;
+
+        client_max_body_size 100M;
+
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+            fastcgi_pass localhost:9000;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+            
+            fastcgi_read_timeout 300;
+            fastcgi_send_timeout 300;
+            fastcgi_connect_timeout 300;
+            fastcgi_buffers 16 16k;
+            fastcgi_buffer_size 32k;
+        }
+
+        location ~ /\.ht {
+            deny all;
+        }
+    } 

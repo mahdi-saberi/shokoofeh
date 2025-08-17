@@ -24,6 +24,11 @@
         border: 1px solid var(--border-color);
     }
 
+    .main-product-image {
+        margin-bottom: var(--space-xl);
+        text-align: center;
+    }
+
     .product-main-image {
         width: 100%;
         height: 400px;
@@ -31,6 +36,127 @@
         border-radius: var(--radius-lg);
         margin-bottom: var(--space-lg);
         box-shadow: var(--shadow-sm);
+    }
+
+    .slider-title {
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: var(--space-lg);
+        text-align: center;
+    }
+
+    /* Media Slider Styles */
+    .media-slider {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .slider-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .slider-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider-item.active {
+        opacity: 1;
+    }
+
+    .slider-image,
+    .slider-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: var(--radius-lg);
+    }
+
+    .slider-video {
+        background: #000;
+    }
+
+    /* Slider Navigation */
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 var(--space-md);
+        pointer-events: none;
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-primary);
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        pointer-events: auto;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .nav-btn:hover {
+        background: white;
+        transform: scale(1.1);
+    }
+
+    .nav-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Slider Dots */
+    .slider-dots {
+        position: absolute;
+        bottom: var(--space-md);
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: var(--space-xs);
+        pointer-events: none;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        pointer-events: auto;
+    }
+
+    .dot.active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    .dot:hover {
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .product-info {
@@ -98,8 +224,48 @@
         background: var(--background-color);
         padding: var(--space-xl);
         border-radius: var(--radius-lg);
-        margin-bottom: var(--space-xl);
         border: 1px solid var(--border-color);
+        margin-bottom: var(--space-xxl);
+    }
+
+    .product-tags {
+        background: var(--background-color);
+        padding: var(--space-xl);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-bottom: var(--space-xxl);
+    }
+
+    .tags-title {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: var(--space-lg);
+    }
+
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+
+    .product-tag {
+        display: inline-block;
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .product-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-decoration: none;
     }
 
     .description-title {
@@ -286,7 +452,13 @@
         <a href="{{ route('welcome') }}">🏠 صفحه اصلی</a>
         <span class="breadcrumb-separator">←</span>
         @if($product->category)
-            <a href="{{ route('welcome', ['category' => $product->category->id]) }}">{{ $product->category->title }}</a>
+            @if(is_array($product->category) && count($product->category) > 0)
+                <a href="{{ route('welcome', ['category' => $product->category[0]]) }}">{{ $product->category[0] }}</a>
+            @elseif(is_string($product->category))
+                <a href="{{ route('welcome', ['category' => $product->category]) }}">{{ $product->category }}</a>
+            @elseif(is_object($product->category))
+                <a href="{{ route('welcome', ['category' => $product->category->id ?? $product->category->title]) }}">{{ $product->category->title ?? $product->category }}</a>
+            @endif
             <span class="breadcrumb-separator">←</span>
         @endif
         <span>{{ $product->title }}</span>
@@ -296,9 +468,71 @@
     <div class="product-detail-grid fade-in-up">
         <!-- Product Gallery -->
         <div class="product-gallery">
-            <img src="{{ $product->image_url ?: 'https://via.placeholder.com/400x400?text=تصویر+محصول' }}"
-                 alt="{{ $product->title }}"
-                 class="product-main-image">
+            <!-- Main Product Image -->
+            <div class="main-product-image">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}"
+                         alt="{{ $product->title }}"
+                         class="product-main-image">
+                @else
+                    <img src="https://via.placeholder.com/400x400?text=تصویر+محصول"
+                         alt="{{ $product->title }}"
+                         class="product-main-image">
+                @endif
+            </div>
+
+            @if($product->media->count() > 0)
+                <!-- Debug Info -->
+                <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-size: 12px;">
+                    Debug: Media count: {{ $product->media->count() }},
+                    Images: {{ $product->media->where('file_type', 'image')->count() }},
+                    Videos: {{ $product->media->where('file_type', 'video')->count() }}
+                </div>
+
+                <!-- Media Slider -->
+                <div class="media-slider">
+                    <h3 class="slider-title">
+                        @if($product->media->where('file_type', 'image')->count() > 0 && $product->media->where('file_type', 'video')->count() > 0)
+                            📸 تصاویر و ویدیوهای محصول
+                        @elseif($product->media->where('file_type', 'video')->count() > 0)
+                            🎥 ویدیوهای محصول
+                        @else
+                            📸 تصاویر اضافی محصول
+                        @endif
+                    </h3>
+                    <div class="slider-container">
+                        @foreach($product->media->sortBy('sort_order') as $media)
+                            <div class="slider-item {{ $loop->first ? 'active' : '' }}" data-media-id="{{ $media->id }}">
+                                @if($media->isImage())
+                                    <img src="{{ $media->file_url }}"
+                                         alt="{{ $product->title }}"
+                                         class="slider-image">
+                                @else
+                                    <video controls class="slider-video">
+                                        <source src="{{ $media->file_url }}" type="{{ $media->mime_type }}">
+                                        مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                    </video>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Slider Navigation -->
+                    @if($product->media->count() > 1)
+                        <div class="slider-nav">
+                            <button class="nav-btn prev" onclick="changeSlide(-1)">‹</button>
+                            <button class="nav-btn next" onclick="changeSlide(1)">›</button>
+                        </div>
+
+                        <!-- Slider Dots -->
+                        <div class="slider-dots">
+                            @foreach($product->media as $index => $media)
+                                <span class="dot {{ $loop->first ? 'active' : '' }}" onclick="goToSlide({{ $index }})"></span>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- Product Info -->
@@ -315,21 +549,68 @@
                 @if($product->category)
                     <div class="meta-item">
                         <div class="meta-label">🎯 دسته‌بندی</div>
-                        <div class="meta-value">{{ $product->category->title ?? 'نامشخص' }}</div>
+                        <div class="meta-value">
+                            @if(is_array($product->category) && count($product->category) > 0)
+                                {{ implode(', ', $product->category) }}
+                            @elseif(is_string($product->category))
+                                {{ $product->category }}
+                            @elseif(is_object($product->category))
+                                {{ $product->category->title ?? 'نامشخص' }}
+                            @else
+                                نامشخص
+                            @endif
+                        </div>
                     </div>
                 @endif
 
-                @if($product->age_group_object)
+                @if($product->age_group)
                     <div class="meta-item">
                         <div class="meta-label">👶 رده سنی</div>
-                        <div class="meta-value">{{ $product->age_group_object->title ?? 'نامشخص' }}</div>
+                        <div class="meta-value">
+                            @if(is_array($product->age_group) && count($product->age_group) > 0)
+                                {{ implode(', ', $product->age_group) }}
+                            @elseif(is_string($product->age_group))
+                                {{ $product->age_group }}
+                            @elseif(is_object($product->age_group))
+                                {{ $product->age_group->title ?? 'نامشخص' }}
+                            @else
+                                نامشخص
+                            @endif
+                        </div>
                     </div>
                 @endif
 
-                @if($product->game_type_object)
+                @if($product->game_type)
                     <div class="meta-item">
                         <div class="meta-label">🎮 نوع بازی</div>
-                        <div class="meta-value">{{ $product->game_type_object->title ?? 'نامشخص' }}</div>
+                        <div class="meta-value">
+                            @if(is_array($product->game_type) && count($product->game_type) > 0)
+                                {{ implode(', ', $product->game_type) }}
+                            @elseif(is_string($product->game_type))
+                                {{ $product->game_type }}
+                            @elseif(is_object($product->game_type))
+                                {{ $product->game_type->title ?? 'نامشخص' }}
+                            @else
+                                نامشخص
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                                @if($product->brand)
+                    <div class="meta-item">
+                        <div class="meta-label">🏷️ برند</div>
+                        <div class="meta-value">
+                            @if($product->brand)
+                                <a href="{{ route('welcome', ['brand' => $product->brand->id]) }}"
+                                   class="brand-link"
+                                   style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                                    {{ $product->brand->title }}
+                                </a>
+                            @else
+                                نامشخص
+                            @endif
+                        </div>
                     </div>
                 @endif
 
@@ -378,6 +659,25 @@
         </div>
     @endif
 
+    <!-- Product Tags -->
+    @if($product->tags && $product->tags->count() > 0)
+        <div class="product-tags fade-in-up">
+            <h2 class="tags-title">
+                <span>🏷️</span>
+                <span>برچسب‌های محصول</span>
+            </h2>
+            <div class="tags-container">
+                @foreach($product->tags as $tag)
+                    <a href="{{ route('welcome', ['tag' => $tag->slug]) }}"
+                       class="product-tag"
+                       style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }}40;">
+                        {{ $tag->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Related Products -->
     @if($relatedProducts && $relatedProducts->count() > 0)
         <section class="related-products fade-in-up">
@@ -400,6 +700,50 @@
 
 @push('scripts')
 <script>
+    // Slider functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slider-item');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(index) {
+        // Hide all slides
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        // Show current slide
+        if (slides[index]) {
+            slides[index].classList.add('active');
+        }
+        if (dots[index]) {
+            dots[index].classList.add('active');
+        }
+
+        currentSlide = index;
+    }
+
+    function changeSlide(direction) {
+        let newIndex = currentSlide + direction;
+
+        if (newIndex >= slides.length) {
+            newIndex = 0;
+        } else if (newIndex < 0) {
+            newIndex = slides.length - 1;
+        }
+
+        showSlide(newIndex);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    // Auto-advance slides every 5 seconds
+    if (slides.length > 1) {
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+    }
+
     // Add to cart function
     function addToCart(productId) {
         const button = event.target.closest('.btn-add-cart');

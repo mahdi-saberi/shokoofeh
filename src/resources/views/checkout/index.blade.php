@@ -241,7 +241,7 @@
                             آدرس کامل <span class="required">*</span>
                         </label>
                         <textarea class="form-control" id="shipping_address" name="shipping_address"
-                                  rows="3" placeholder="آدرس کامل خود را وارد کنید..." required>{{ old('shipping_address') }}</textarea>
+                                  rows="3" placeholder="آدرس کامل خود را وارد کنید..." required>{{ old('shipping_address', auth()->user()->shipping_address ?? '') }}</textarea>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
@@ -250,7 +250,15 @@
                                 کد پستی <span class="required">*</span>
                             </label>
                             <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                   value="{{ old('postal_code') }}" placeholder="1234567890" required>
+                                   value="{{ old('postal_code', auth()->user()->postal_code ?? '') }}" placeholder="1234567890" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="province" class="form-label">
+                                استان <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="province" name="province"
+                                   value="{{ old('province', auth()->user()->province ?? '') }}" placeholder="تهران" required>
                         </div>
 
                         <div class="form-group">
@@ -258,13 +266,7 @@
                                 شهر <span class="required">*</span>
                             </label>
                             <input type="text" class="form-control" id="city" name="city"
-                                   value="{{ old('city') }}" placeholder="تهران" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="province" class="form-label">استان</label>
-                            <input type="text" class="form-control" id="province" name="province"
-                                   value="{{ old('province') }}" placeholder="تهران">
+                                   value="{{ old('city', auth()->user()->city ?? '') }}" placeholder="تهران" required>
                         </div>
                     </div>
 

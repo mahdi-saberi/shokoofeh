@@ -44,7 +44,7 @@ services:
       - laravel
 
   nginx:
-    image: registry.hamdocker.ir/mahdi-saberi/nginx:alpine
+    image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
     container_name: nginx
     restart: unless-stopped
     ports:

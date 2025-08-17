@@ -77,6 +77,14 @@ Route::get('/', function () {
         $query->byGender(request()->gender);
     }
 
+    // فیلتر تگ
+    if (request()->filled('tag')) {
+        $tag = request()->tag;
+        $query->whereHas('tags', function($q) use ($tag) {
+            $q->where('slug', $tag);
+        });
+    }
+
     // مرتب‌سازی
     $sort = request()->get('sort', 'newest');
     switch ($sort) {
@@ -105,20 +113,37 @@ Route::get('/', function () {
     $categories = \App\Models\Category::all();
     $ageGroups = \App\Models\AgeGroup::all();
     $gameTypes = \App\Models\GameType::all();
+    $tags = \App\Models\Tag::active()->get();
     $sliders = \App\Models\Slider::active()->ordered()->get();
     $siteSettings = \App\Models\SiteSetting::current();
+
+    // محصولات ویژه و پرفروش
+    $featuredProducts = \App\Models\Product::where('stock', '>', 0)
+        ->latest()
+        ->limit(6)
+        ->get();
+
+    // محصولات با تخفیف
+    $discountedProducts = \App\Models\Product::whereHas('discounts', function($query) {
+        $query->where('is_active', true)
+              ->where('start_date', '<=', now())
+              ->where('end_date', '>=', now());
+    })->where('stock', '>', 0)
+    ->latest()
+    ->limit(4)
+    ->get();
 
     // Check if this is an Ajax request
     if (request()->ajax() || request()->wantsJson() || request()->header('X-Requested-With') === 'XMLHttpRequest') {
         return view('products-partial', compact('products', 'categories', 'ageGroups', 'gameTypes'));
     }
 
-        return view('welcome', compact('products', 'categories', 'ageGroups', 'gameTypes', 'sliders', 'siteSettings'));
+        return view('welcome', compact('products', 'categories', 'ageGroups', 'gameTypes', 'tags', 'sliders', 'siteSettings', 'featuredProducts', 'discountedProducts'));
 })->name('welcome');
 
 // صفحه جزئیات محصول - بدون نیاز به authentication
 Route::get('/product/{id}', function ($id) {
-    $product = \App\Models\Product::findOrFail($id);
+    $product = \App\Models\Product::with(['tags', 'media'])->findOrFail($id);
     $relatedProducts = \App\Models\Product::where('id', '!=', $id)
                                          ->limit(4)
                                          ->latest()
@@ -156,13 +181,12 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+
 // Admin Panel Routes - نیاز به authentication و admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin Dashboard
-    Route::get('/dashboard', function () {
-        $products = \App\Models\Product::latest()->take(5)->get();
-        return view('admin.dashboard', compact('products'));
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // Profile Management - همه ادمین ها
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -172,10 +196,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Products Management
     Route::resource('products', ProductController::class);
 
+    // Media Management
+    Route::delete('/media/{media}', [ProductController::class, 'deleteMedia'])->name('media.delete');
+    Route::post('/media/{media}/set-main', [ProductController::class, 'setMainImage'])->name('media.set-main');
+
     // Lookup Tables Management
     Route::resource('age-groups', AgeGroupController::class);
     Route::resource('game-types', GameTypeController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
+    Route::post('/tags/{tag}/toggle-status', [\App\Http\Controllers\Admin\TagController::class, 'toggleStatus'])->name('tags.toggle-status');
+
+    // Brands Management
+    Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
+    Route::post('/brands/{brand}/toggle-status', [\App\Http\Controllers\Admin\BrandController::class, 'toggleStatus'])->name('brands.toggle-status');
 
     // Discounts Management
     Route::resource('discounts', DiscountController::class);
@@ -212,3 +246,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
     });
 });
+
+

@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-source-files
+spec:
+  template:
+    spec:
+      containers:
+      - name: copy-source
+        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+        command: ['/bin/sh', '-c']
+        args:
+        - |
+          cp -r /var/www/* /shared-source/
+          chown -R www:www /shared-source/
+          chmod -R 775 /shared-source/storage
+          chmod -R 775 /shared-source/bootstrap/cache
+          echo "Source files copied successfully"
+        volumeMounts:
+        - name: shared-source
+          mountPath: /shared-source
+      volumes:
+      - name: shared-source
+        persistentVolumeClaim:
+          claimName: shared-source-pvc
+      restartPolicy: Never
+  backoffLimit: 3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-source-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi 

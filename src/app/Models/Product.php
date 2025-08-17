@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'title', 'image', 'age_group', 'game_type', 'category', 'gender', 'product_code', 'price', 'description', 'stock'
+        'title', 'image', 'age_group', 'game_type', 'category', 'gender', 'product_code', 'brand_id', 'price', 'description', 'stock'
     ];
 
     protected $casts = [
@@ -24,6 +24,67 @@ class Product extends Model
         return $this->hasMany(Discount::class)->where('type', 'product');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * رابطه با برند
+     */
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * رابطه با رسانه‌های محصول
+     */
+    public function media()
+    {
+        return $this->hasMany(ProductMedia::class)->ordered();
+    }
+
+    /**
+     * رابطه با تصاویر محصول
+     */
+    public function images()
+    {
+        return $this->hasMany(ProductMedia::class)->images()->ordered();
+    }
+
+    /**
+     * رابطه با ویدیوهای محصول
+     */
+    public function videos()
+    {
+        return $this->hasMany(ProductMedia::class)->videos()->ordered();
+    }
+
+    /**
+     * تصویر اصلی محصول
+     */
+    public function mainImage()
+    {
+        return $this->hasOne(ProductMedia::class)->mainImage();
+    }
+
+    /**
+     * دریافت برند مرتبط با محصول (برای backward compatibility)
+     */
+    public function brandObject()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * دریافت تمام برندهای موجود
+     */
+    public static function getAvailableBrands()
+    {
+        return \App\Models\Brand::where('status', true)->orderBy('title')->get();
+    }
+
     // Scopes
     public function scopeInStock($query)
     {
@@ -38,6 +99,10 @@ class Product extends Model
     // Accessor for age_group - تبدیل ID به عنوان
     public function getAgeGroupAttribute($value)
     {
+        if (empty($value)) {
+            return [];
+        }
+
         if (is_string($value)) {
             $decoded = json_decode($value, true);
             if (is_array($decoded)) {
@@ -72,6 +137,10 @@ class Product extends Model
     // Accessor for game_type - تبدیل ID به عنوان
     public function getGameTypeAttribute($value)
     {
+        if (empty($value)) {
+            return [];
+        }
+
         if (is_string($value)) {
             $decoded = json_decode($value, true);
             if (is_array($decoded)) {
@@ -106,6 +175,10 @@ class Product extends Model
     // Helper method to get category title (backward compatible)
     public function getCategoryTitleAttribute()
     {
+        if (empty($this->category)) {
+            return 'نامشخص';
+        }
+
         if (is_array($this->category)) {
             return implode(', ', $this->category);
         }
@@ -121,6 +194,10 @@ class Product extends Model
     // Helper method to get game type title (backward compatible)
     public function getGameTypeTitleAttribute()
     {
+        if (empty($this->game_type)) {
+            return 'نامشخص';
+        }
+
         if (is_array($this->game_type)) {
             return implode(', ', $this->game_type);
         }
@@ -294,24 +371,55 @@ class Product extends Model
         return $query->where('gender', $gender);
     }
 
+    // Scope برای فیلتر برند
+    public function scopeByBrand($query, $brand)
+    {
+        if (is_numeric($brand)) {
+            return $query->where('brand_id', $brand);
+        }
+        return $query->whereHas('brand', function($q) use ($brand) {
+            $q->where('title', 'like', "%{$brand}%");
+        });
+    }
+
     /**
      * دریافت Category مرتبط با محصول
      */
     public function getCategoryAttribute($value)
     {
-        // اگر category یک ID است، Category مربوطه را برمی‌گرداند
-        if (is_numeric($value)) {
-            return Category::find($value);
+        if (empty($value)) {
+            return [];
         }
 
-        // اگر array است، آن را decode می‌کند
         if (is_string($value)) {
             $decoded = json_decode($value, true);
-            if (is_array($decoded) && count($decoded) > 0 && is_numeric($decoded[0])) {
-                return Category::find($decoded[0]);
+            if (is_array($decoded)) {
+                $categoryTitles = [];
+                foreach ($decoded as $categoryId) {
+                    if (is_numeric($categoryId)) {
+                        $category = \App\Models\Category::find($categoryId);
+                        if ($category) {
+                            $categoryTitles[] = $category->title;
+                        }
+                    } else {
+                        $categoryTitles[] = $categoryId;
+                    }
+                }
+                return $categoryTitles;
             }
+            return [$value];
         }
-        return null;
+        return is_array($value) ? $value : [$value];
+    }
+
+    // Mutator for category to ensure it's stored as JSON
+    public function setCategoryAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['category'] = json_encode($value);
+        } else {
+            $this->attributes['category'] = $value;
+        }
     }
 
     /**
@@ -343,6 +451,19 @@ class Product extends Model
      */
     public function getImageUrlAttribute()
     {
+        // ابتدا تصویر اصلی را از جدول media بررسی می‌کنیم
+        $mainImage = $this->mainImage;
+        if ($mainImage && $mainImage->file_url) {
+            return $mainImage->file_url;
+        }
+
+        // اگر تصویر اصلی وجود نداشت، اولین تصویر را بررسی می‌کنیم
+        $firstImage = $this->images()->first();
+        if ($firstImage && $firstImage->file_url) {
+            return $firstImage->file_url;
+        }
+
+        // اگر هیچ تصویری وجود نداشت، تصویر قدیمی را بررسی می‌کنیم
         if ($this->image && file_exists(storage_path('app/public/' . $this->image))) {
             return asset('storage/' . $this->image);
         }

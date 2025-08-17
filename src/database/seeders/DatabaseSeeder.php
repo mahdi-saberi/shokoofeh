@@ -45,6 +45,8 @@ class DatabaseSeeder extends Seeder
             AgeGroupSeeder::class,
             GameTypeSeeder::class,
             CategorySeeder::class,
+            TagSeeder::class,
+            BrandSeeder::class,
             ProductSeeder::class,
         ]);
     }

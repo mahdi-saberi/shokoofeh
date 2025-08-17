@@ -101,6 +101,108 @@
         box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
     }
 
+    /* Tags Autocomplete Styles */
+    .tags-autocomplete-container {
+        position: relative;
+    }
+
+    .tags-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e9ecef;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .tag-suggestion {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f8f9fa;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .tag-suggestion:hover {
+        background-color: #f8f9fa;
+    }
+
+    .tag-suggestion.selected {
+        background-color: #e3f2fd;
+    }
+
+    .tag-suggestion.create-new-tag {
+        background-color: #f8f9fa;
+        border-left: 3px solid #6c757d;
+    }
+
+    .tag-suggestion.create-new-tag:hover {
+        background-color: #e9ecef;
+    }
+
+    .tag-color-preview {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .selected-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        min-height: 40px;
+        padding: 0.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+
+    .selected-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid;
+    }
+
+    .selected-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .remove-tag {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font-size: 1.2rem;
+        line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .remove-tag:hover {
+        opacity: 1;
+    }
+
     .invalid-feedback {
         display: block;
         width: 100%;
@@ -184,6 +286,148 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
+    .existing-media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .media-item {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: white;
+        transition: border-color 0.3s ease;
+        position: relative;
+    }
+
+    .media-item:hover {
+        border-color: #f39c12;
+    }
+
+    .media-preview {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+
+    .media-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .multiple-images-preview,
+    .videos-preview {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .preview-item {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    .preview-item:hover {
+        border-color: #f39c12;
+    }
+
+    .preview-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .preview-name {
+        font-size: 0.875rem;
+        color: #495057;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .preview-size {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .video-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .video-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: #f39c12;
+    }
+
+    .video-name {
+        font-size: 0.875rem;
+        color: #495057;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .file-upload-area.multiple,
+    .file-upload-area.video {
+        border: 2px dashed #f39c12;
+        background: linear-gradient(135deg, rgba(243, 156, 18, 0.05) 0%, rgba(231, 76, 60, 0.05) 100%);
+    }
+
+    .file-upload-area.multiple:hover,
+    .file-upload-area.video:hover {
+        border-color: #e74c3c;
+        background: linear-gradient(135deg, rgba(243, 156, 18, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%);
+    }
+
     .multi-select-container {
         position: relative;
     }
@@ -197,11 +441,20 @@
         padding: 0.5rem;
         margin: 0.25rem 0;
         border-radius: 4px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
     }
 
     .multi-select option:checked {
         background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
         color: white;
+        border-color: #f39c12;
+    }
+
+    .multi-select option:hover {
+        background: #f8f9fa;
+        border-color: #f39c12;
     }
 
     .form-help {
@@ -645,40 +898,54 @@
 
                     <div class="form-group">
                         <label for="category">دسته‌بندی *</label>
-                        <select id="category"
-                                name="category"
-                                class="form-control {{ $errors->has('category') ? 'is-invalid' : '' }}"
-                                required>
-                            <option value="">انتخاب کنید</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->title }}" {{ old('category', $product->category) == $category->title ? 'selected' : '' }}>
-                                    {{ $category->title }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="multi-select-container">
+                            <select id="category"
+                                    name="category[]"
+                                    class="form-control multi-select {{ $errors->has('category') ? 'is-invalid' : '' }}"
+                                    multiple
+                                    required>
+                                @foreach($categories as $category)
+                                    @php
+                                        $productCategories = old('category', $product->category ?? []);
+                                        $isSelected = is_array($productCategories) && in_array($category->title, $productCategories);
+                                    @endphp
+                                    <option value="{{ $category->title }}" {{ $isSelected ? 'selected' : '' }}>
+                                        {{ $category->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         @error('category')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div class="form-help">برای انتخاب چند دسته‌بندی، Ctrl/Cmd را نگه دارید</div>
                     </div>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="game_type">نوع بازی *</label>
-                        <select id="game_type"
-                                name="game_type"
-                                class="form-control {{ $errors->has('game_type') ? 'is-invalid' : '' }}"
-                                required>
-                            <option value="">انتخاب کنید</option>
-                            @foreach($gameTypes as $gameType)
-                                <option value="{{ $gameType->title }}" {{ old('game_type', $product->game_type) == $gameType->title ? 'selected' : '' }}>
-                                    {{ $gameType->title }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="multi-select-container">
+                            <select id="game_type"
+                                    name="game_type[]"
+                                    class="form-control multi-select {{ $errors->has('game_type') ? 'is-invalid' : '' }}"
+                                    multiple
+                                    required>
+                                @foreach($gameTypes as $gameType)
+                                    @php
+                                        $productGameTypes = old('game_type', $product->game_type ?? []);
+                                        $isSelected = is_array($productGameTypes) && in_array($gameType->title, $productGameTypes);
+                                    @endphp
+                                    <option value="{{ $gameType->title }}" {{ $isSelected ? 'selected' : '' }}>
+                                        {{ $gameType->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         @error('game_type')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div class="form-help">برای انتخاب چند نوع بازی، Ctrl/Cmd را نگه دارید</div>
                     </div>
 
                     <div class="form-group">
@@ -704,6 +971,32 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <div class="form-help">برای انتخاب چند گروه سنی، Ctrl/Cmd را نگه دارید</div>
+                    </div>
+                </div>
+
+                <div class="form-grid single-column">
+                    <div class="form-group">
+                        <label for="tags">برچسب‌ها (تگ‌ها)</label>
+                        <div class="tags-autocomplete-container">
+                            <input type="text"
+                                   id="tagInput"
+                                   class="form-control"
+                                   placeholder="برای جستجو تایپ کنید..."
+                                   autocomplete="off">
+                            <div class="tags-suggestions" id="tagSuggestions"></div>
+                            <div class="selected-tags" id="selectedTags">
+                                @foreach($product->tags as $tag)
+                                    <div class="selected-tag"
+                                         data-tag-id="{{ $tag->id }}"
+                                         style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }}40;">
+                                        <span>{{ $tag->name }}</span>
+                                        <button type="button" class="remove-tag" onclick="removeTag({{ $tag->id }})">×</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <input type="hidden" name="tags" id="tagsInput" value="{{ $product->tags->pluck('id')->implode(',') }}">
+                        </div>
+                        <div class="form-help">برچسب‌های مرتبط با محصول را انتخاب کنید</div>
                     </div>
                 </div>
 
@@ -739,6 +1032,24 @@
                         @enderror
                         <div class="form-help">کد منحصر به فرد محصول</div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="brand">برند</label>
+                        <select id="brand"
+                                name="brand"
+                                class="form-control {{ $errors->has('brand') ? 'is-invalid' : '' }}">
+                            <option value="">انتخاب کنید</option>
+                            @foreach(\App\Models\Brand::where('status', true)->orderBy('title')->get() as $brandOption)
+                                <option value="{{ $brandOption->id }}" {{ old('brand_id', $product->brand_id) == $brandOption->id ? 'selected' : '' }}>
+                                    {{ $brandOption->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('brand')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-help">برند محصول (اختیاری)</div>
+                    </div>
                 </div>
             </div>
 
@@ -759,6 +1070,7 @@
                 @endif
 
                 <div class="form-group">
+                    <label>تصویر اصلی (اختیاری)</label>
                     <div class="file-upload-area" onclick="document.getElementById('image').click()">
                         <div class="file-upload-icon">📷</div>
                         <div class="file-upload-text">برای انتخاب تصویر جدید کلیک کنید</div>
@@ -776,6 +1088,77 @@
                     <div class="image-preview" id="imagePreview">
                         <img id="previewImg" class="preview-image" alt="پیش‌نمایش تصویر جدید">
                     </div>
+                </div>
+
+                <!-- نمایش رسانه‌های موجود -->
+                @if($product->media->count() > 0)
+                    <div class="form-group">
+                        <label>رسانه‌های موجود:</label>
+                        <div class="existing-media-grid">
+                            @foreach($product->media->sortBy('sort_order') as $media)
+                                <div class="media-item" data-media-id="{{ $media->id }}">
+                                    @if($media->isImage())
+                                        <img src="{{ $media->file_url }}" alt="تصویر محصول" class="media-preview">
+                                    @else
+                                        <div class="video-preview">
+                                            <div class="video-icon">🎥</div>
+                                            <span class="video-name">{{ $media->original_name }}</span>
+                                        </div>
+                                    @endif
+                                    <div class="media-actions">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteMedia({{ $media->id }})">
+                                            🗑️ حذف
+                                        </button>
+                                        @if($media->isImage())
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="setMainImage({{ $media->id }})">
+                                                {{ $media->is_main ? '✅ اصلی' : '⭐ اصلی' }}
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div class="form-group">
+                    <label>تصاویر اضافی (چند تصویر)</label>
+                    <div class="file-upload-area multiple" onclick="document.getElementById('images').click()">
+                        <div class="file-upload-icon">🖼️</div>
+                        <div class="file-upload-text">برای انتخاب تصاویر اضافی کلیک کنید</div>
+                        <div class="file-upload-subtext">می‌توانید چندین تصویر انتخاب کنید</div>
+                        <div class="file-upload-subtext">فرمت‌های مجاز: JPG, PNG, GIF, WEBP (حداکثر 2MB)</div>
+                        <input type="file"
+                               id="images"
+                               name="images[]"
+                               class="file-input"
+                               multiple
+                               accept="image/*">
+                    </div>
+                    @error('images.*')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="multiple-images-preview" id="multipleImagesPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>ویدیوهای محصول (اختیاری)</label>
+                    <div class="file-upload-area video" onclick="document.getElementById('videos').click()">
+                        <div class="file-upload-icon">🎥</div>
+                        <div class="file-upload-text">برای انتخاب ویدیو کلیک کنید</div>
+                        <div class="file-upload-subtext">می‌توانید چندین ویدیو انتخاب کنید</div>
+                        <div class="file-upload-subtext">فرمت‌های مجاز: MP4, AVI, MOV, WMV, FLV, WEBM (حداکثر 10MB)</div>
+                        <input type="file"
+                               id="videos"
+                               name="videos[]"
+                               class="file-input"
+                               multiple
+                               accept="video/*">
+                    </div>
+                    @error('videos.*')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="videos-preview" id="videosPreview"></div>
                 </div>
             </div>
 
@@ -939,6 +1322,116 @@
         }
     });
 
+    // Multiple images preview
+    document.getElementById('images').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const preview = document.getElementById('multipleImagesPreview');
+        preview.innerHTML = '';
+
+        files.forEach((file, index) => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'preview-item';
+                    imgContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="تصویر ${index + 1}" class="preview-image">
+                        <div class="preview-info">
+                            <span class="preview-name">${file.name}</span>
+                            <span class="preview-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    `;
+                    preview.appendChild(imgContainer);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+
+    // Videos preview
+    document.getElementById('videos').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const preview = document.getElementById('videosPreview');
+        preview.innerHTML = '';
+
+        files.forEach((file, index) => {
+            if (file.type.startsWith('video/')) {
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'preview-item video';
+                videoContainer.innerHTML = `
+                    <div class="video-preview">
+                        <div class="video-icon">🎥</div>
+                        <div class="preview-info">
+                            <span class="preview-name">${file.name}</span>
+                            <span class="preview-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    </div>
+                `;
+                preview.appendChild(videoContainer);
+            }
+        });
+    });
+
+    // Media management functions
+    function deleteMedia(mediaId) {
+        if (confirm('آیا از حذف این رسانه اطمینان دارید؟')) {
+            fetch(`/admin/media/${mediaId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the media item from DOM
+                    const mediaItem = document.querySelector(`[data-media-id="${mediaId}"]`);
+                    if (mediaItem) {
+                        mediaItem.remove();
+                    }
+                    // Show success message
+                    alert('رسانه با موفقیت حذف شد');
+                } else {
+                    alert('خطا در حذف رسانه');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('خطا در حذف رسانه');
+            });
+        }
+    }
+
+    function setMainImage(mediaId) {
+        fetch(`/admin/media/${mediaId}/set-main`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update all main image buttons
+                document.querySelectorAll('.btn-primary').forEach(btn => {
+                    btn.textContent = '⭐ اصلی';
+                });
+                // Update the clicked button
+                const clickedBtn = document.querySelector(`[data-media-id="${mediaId}"] .btn-primary`);
+                if (clickedBtn) {
+                    clickedBtn.textContent = '✅ اصلی';
+                }
+                alert('تصویر اصلی با موفقیت تنظیم شد');
+            } else {
+                alert('خطا در تنظیم تصویر اصلی');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('خطا در تنظیم تصویر اصلی');
+        });
+    }
+
     // Drag and drop functionality
     const uploadArea = document.querySelector('.file-upload-area');
     const fileInput = document.getElementById('image');
@@ -979,5 +1472,190 @@
             fileInput.dispatchEvent(new Event('change'));
         }
     }
+
+    // Tags Autocomplete Functionality
+    const tagInput = document.getElementById('tagInput');
+    const tagSuggestions = document.getElementById('tagSuggestions');
+    const selectedTags = document.getElementById('selectedTags');
+    const tagsInput = document.getElementById('tagsInput');
+
+    // Available tags data
+    const availableTags = @json($tags);
+    let selectedTagIds = [];
+
+    // Initialize selected tags from existing tags
+    document.querySelectorAll('#selectedTags .selected-tag').forEach(tagElement => {
+        const tagId = parseInt(tagElement.dataset.tagId);
+        selectedTagIds.push(tagId);
+    });
+
+        // Show suggestions
+    function showSuggestions(query) {
+        if (!query.trim()) {
+            tagSuggestions.style.display = 'none';
+            return;
+        }
+
+        const filteredTags = availableTags.filter(tag =>
+            tag.name.toLowerCase().includes(query.toLowerCase()) &&
+            !selectedTagIds.includes(tag.id)
+        );
+
+        let suggestionsHTML = '';
+
+        // Add existing tag suggestions
+        if (filteredTags.length > 0) {
+            suggestionsHTML += filteredTags.map(tag => `
+                <div class="tag-suggestion" data-tag-id="${tag.id}" data-tag-name="${tag.name}" data-tag-color="${tag.color}">
+                    <div class="tag-color-preview" style="background-color: ${tag.color}"></div>
+                    <span>${tag.name}</span>
+                </div>
+            `).join('');
+        }
+
+        // Add "create new tag" option if query doesn't match any existing tag
+        const exactMatch = availableTags.some(tag =>
+            tag.name.toLowerCase() === query.toLowerCase()
+        );
+
+        if (!exactMatch && query.trim().length > 1) {
+            suggestionsHTML += `
+                <div class="tag-suggestion create-new-tag" data-tag-name="${query.trim()}" data-is-new="true">
+                    <div class="tag-color-preview" style="background-color: #6c757d"></div>
+                    <span>➕ ایجاد تگ جدید: "${query.trim()}"</span>
+                </div>
+            `;
+        }
+
+        if (suggestionsHTML) {
+            tagSuggestions.innerHTML = suggestionsHTML;
+            tagSuggestions.style.display = 'block';
+        } else {
+            tagSuggestions.style.display = 'none';
+        }
+    }
+
+        // Add tag to selected tags
+    function addTag(tagId, tagName, tagColor, isNew = false) {
+        // For new tags, we'll use a temporary ID
+        const actualTagId = isNew ? `new_${Date.now()}` : tagId;
+
+        if (selectedTagIds.includes(actualTagId)) return;
+
+        selectedTagIds.push(actualTagId);
+
+        const tagElement = document.createElement('div');
+        tagElement.className = 'selected-tag';
+        tagElement.style.backgroundColor = tagColor + '20';
+        tagElement.style.color = tagColor;
+        tagElement.style.borderColor = tagColor + '40';
+        tagElement.dataset.tagId = actualTagId;
+        tagElement.dataset.tagName = tagName;
+        tagElement.dataset.isNew = isNew;
+
+        tagElement.innerHTML = `
+            <span>${tagName}</span>
+            <button type="button" class="remove-tag" onclick="removeTag('${actualTagId}')">×</button>
+        `;
+
+        selectedTags.appendChild(tagElement);
+        updateTagsInput();
+    }
+
+    // Remove tag from selected tags
+    function removeTag(tagId) {
+        selectedTagIds = selectedTagIds.filter(id => id !== tagId);
+        const tagElement = selectedTags.querySelector(`[data-tag-id="${tagId}"]`);
+        if (tagElement) {
+            tagElement.remove();
+        }
+        updateTagsInput();
+    }
+
+    // Update hidden input with selected tag IDs and new tags
+    function updateTagsInput() {
+        const tagData = [];
+
+        selectedTagIds.forEach(tagId => {
+            const tagElement = selectedTags.querySelector(`[data-tag-id="${tagId}"]`);
+            if (tagElement) {
+                const isNew = tagElement.dataset.isNew === 'true';
+                const tagName = tagElement.dataset.tagName;
+
+                if (isNew) {
+                    tagData.push(`new:${tagName}`);
+                } else {
+                    tagData.push(tagId);
+                }
+            }
+        });
+
+        tagsInput.value = tagData.join(',');
+    }
+
+    // Event listeners
+    tagInput.addEventListener('input', function() {
+        showSuggestions(this.value);
+    });
+
+    tagInput.addEventListener('focus', function() {
+        if (this.value.trim()) {
+            showSuggestions(this.value);
+        }
+    });
+
+        // Handle suggestion clicks
+    tagSuggestions.addEventListener('click', function(e) {
+        const suggestion = e.target.closest('.tag-suggestion');
+        if (suggestion) {
+            const isNewTag = suggestion.classList.contains('create-new-tag');
+
+            if (isNewTag) {
+                const tagName = suggestion.dataset.tagName;
+                addTag(null, tagName, '#6c757d', true);
+            } else {
+                const tagId = parseInt(suggestion.dataset.tagId);
+                const tagName = suggestion.dataset.tagName;
+                const tagColor = suggestion.dataset.tagColor;
+
+                addTag(tagId, tagName, tagColor, false);
+            }
+
+            tagInput.value = '';
+            tagSuggestions.style.display = 'none';
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!tagInput.contains(e.target) && !tagSuggestions.contains(e.target)) {
+            tagSuggestions.style.display = 'none';
+        }
+    });
+
+        // Handle keyboard navigation
+    tagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const firstSuggestion = tagSuggestions.querySelector('.tag-suggestion');
+            if (firstSuggestion) {
+                const isNewTag = firstSuggestion.classList.contains('create-new-tag');
+
+                if (isNewTag) {
+                    const tagName = firstSuggestion.dataset.tagName;
+                    addTag(null, tagName, '#6c757d', true);
+                } else {
+                    const tagId = parseInt(firstSuggestion.dataset.tagId);
+                    const tagName = firstSuggestion.dataset.tagName;
+                    const tagColor = firstSuggestion.dataset.tagColor;
+
+                    addTag(tagId, tagName, tagColor, false);
+                }
+
+                this.value = '';
+                tagSuggestions.style.display = 'none';
+            }
+        }
+    });
 </script>
 @endsection

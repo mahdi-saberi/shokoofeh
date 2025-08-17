@@ -36,6 +36,11 @@ class ProfileController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'shipping_address' => 'nullable|string|max:500',
+            'postal_code' => 'nullable|string|max:20',
+            'city' => 'nullable|string|max:100',
+            'province' => 'nullable|string|max:100',
         ];
 
         // Super admin can change role and status
@@ -49,6 +54,11 @@ class ProfileController extends Controller
         $oldValues = [
             'name' => $user->name,
             'email' => $user->email,
+            'phone' => $user->phone,
+            'shipping_address' => $user->shipping_address,
+            'postal_code' => $user->postal_code,
+            'city' => $user->city,
+            'province' => $user->province,
             'role' => $user->role,
             'is_active' => $user->is_active,
         ];
@@ -56,6 +66,11 @@ class ProfileController extends Controller
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
+            'shipping_address' => $request->shipping_address,
+            'postal_code' => $request->postal_code,
+            'city' => $request->city,
+            'province' => $request->province,
         ];
 
         // Super admin can update role and status
@@ -69,6 +84,11 @@ class ProfileController extends Controller
         $newValues = [
             'name' => $user->name,
             'email' => $user->email,
+            'phone' => $user->phone,
+            'shipping_address' => $user->shipping_address,
+            'postal_code' => $user->postal_code,
+            'city' => $user->city,
+            'province' => $user->province,
             'role' => $user->role,
             'is_active' => $user->is_active,
         ];

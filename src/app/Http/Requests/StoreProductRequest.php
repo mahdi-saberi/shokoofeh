@@ -28,6 +28,8 @@ class StoreProductRequest extends FormRequest
             'description' => 'nullable|string',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'videos.*' => 'nullable|mimes:mp4,avi,mov,wmv,flv,webm|max:10240',
             'age_group' => 'required|array|min:1',
             'age_group.*' => 'required|string',
             'game_type' => 'required|array|min:1',
@@ -36,6 +38,7 @@ class StoreProductRequest extends FormRequest
             'category.*' => 'required|string',
             'gender' => 'required|in:دختر,پسر,هردو',
             'product_code' => 'nullable|string|max:20|unique:products,product_code',
+            'tags' => 'nullable|string',
         ];
     }
 
@@ -61,6 +64,11 @@ class StoreProductRequest extends FormRequest
             'image.image' => 'فایل انتخابی باید تصویر باشد.',
             'image.mimes' => 'فرمت تصویر باید jpeg، png، jpg، gif یا webp باشد.',
             'image.max' => 'حجم تصویر نباید بیش از ۲ مگابایت باشد.',
+            'images.*.image' => 'فایل انتخابی باید تصویر باشد.',
+            'images.*.mimes' => 'فرمت تصویر باید jpeg، png، jpg، gif یا webp باشد.',
+            'images.*.max' => 'حجم تصویر نباید بیش از ۲ مگابایت باشد.',
+            'videos.*.mimes' => 'فرمت ویدیو باید mp4، avi، mov، wmv، flv یا webm باشد.',
+            'videos.*.max' => 'حجم ویدیو نباید بیش از ۱۰ مگابایت باشد.',
 
             'age_group.required' => 'انتخاب حداقل یک گروه سنی الزامی است.',
             'age_group.array' => 'گروه‌های سنی باید به صورت آرایه باشد.',

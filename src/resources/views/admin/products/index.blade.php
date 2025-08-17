@@ -718,24 +718,34 @@
                                 <td>
                                     @if(is_array($product->category) && count($product->category) > 0)
                                         @foreach($product->category as $category)
-                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $category->title }}</span>
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ is_string($category) ? $category : $category->title }}</span>
                                         @endforeach
                                     @elseif($product->category)
-                                        <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category->title }}</span>
+                                        @if(is_string($product->category))
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category }}</span>
+                                        @elseif(is_object($product->category))
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category->title ?? 'نامشخص' }}</span>
+                                        @else
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #28a745, #20c997);">{{ $product->category }}</span>
+                                        @endif
                                     @else
                                         <span class="table-undefined">تعیین نشده</span>
                                     @endif
                                 </td>
                                 <td>
-                                    {{-- @if(is_array($product->game_type) && count($product->game_type) > 0)
+                                    @if(is_array($product->game_type) && count($product->game_type) > 0)
                                         @foreach($product->game_type as $gameType)
-                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $gameType->game_type_title }}</span>
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ is_string($gameType) ? $gameType : $gameType->title }}</span>
                                         @endforeach
-                                    @elseif($product->game_type) --}}
-                                        <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $product->game_type_title }}</span>
-                                    {{-- @else
+                                    @elseif($product->game_type)
+                                        @if(is_string($product->game_type))
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $product->game_type }}</span>
+                                        @else
+                                            <span class="table-badge" style="background: linear-gradient(135deg, #007bff, #0056b3);">{{ $product->game_type->title }}</span>
+                                        @endif
+                                    @else
                                         <span class="table-undefined">تعیین نشده</span>
-                                    @endif --}}
+                                    @endif
                                 </td>
                                 <td>
                                     @if(is_array($product->age_group) && count($product->age_group) > 0)

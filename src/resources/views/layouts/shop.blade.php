@@ -114,6 +114,7 @@
             color: #424242;
             font-size: 14px;
             transition: all 0.3s;
+            position: relative;
         }
 
         .header-btn:hover {
@@ -182,15 +183,21 @@
         }
 
         .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
             background: #ef394e;
             color: white;
             border-radius: 50%;
             padding: 0.2rem 0.5rem;
             font-size: 0.7rem;
-            margin-right: 0.5rem;
-            display: none;
             min-width: 18px;
+            height: 18px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
 
         /* Navigation Menu */
@@ -316,14 +323,18 @@
     <!-- Header -->
     <header class="header">
         <!-- Header Top -->
-        <div class="header-top">
+        @if($siteSettings->header_announcement_enabled && $siteSettings->header_announcement_text)
+        <div class="header-top" style="background-color: {{ $siteSettings->header_announcement_bg_color ?? '#667eea' }}; color: {{ $siteSettings->header_announcement_text_color ?? '#ffffff' }};">
             <div class="container">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>🚚 ارسال رایگان برای خریدهای بالای ۵۰۰ هزار تومان</span>
-                    <span>📞 مشاوره: ۰۲۱-۱۲۳۴۵۶۷۸</span>
+                    <span>{{ $siteSettings->header_announcement_text }}</span>
+                    @if($siteSettings->contact_phone)
+                    <span>📞 {{ $siteSettings->contact_phone }}</span>
+                    @endif
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Header Main -->
         <div class="header-main">
@@ -515,7 +526,7 @@
             const cartCountElements = document.querySelectorAll('.cart-count');
             cartCountElements.forEach(element => {
                 element.textContent = count || 0;
-                element.style.display = count > 0 ? 'inline-block' : 'none';
+                element.style.display = count > 0 ? 'flex' : 'none'; // Changed to flex to center content
             });
         }
 

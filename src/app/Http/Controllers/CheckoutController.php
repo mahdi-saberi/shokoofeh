@@ -30,8 +30,9 @@ class CheckoutController extends Controller
         $cartTotal = Cart::getCartTotal(Auth::user(), session()->getId());
         $shippingCost = Order::calculateShippingCost($cartTotal);
         $finalTotal = $cartTotal + $shippingCost;
+        $siteSettings = \App\Models\SiteSetting::current();
 
-        return view('checkout.index', compact('cartItems', 'cartTotal', 'shippingCost', 'finalTotal'));
+        return view('checkout.index', compact('cartItems', 'cartTotal', 'shippingCost', 'finalTotal', 'siteSettings'));
     }
 
     /**
@@ -47,7 +48,7 @@ class CheckoutController extends Controller
             'shipping_address' => 'required|string|max:500',
             'postal_code' => 'required|string|max:20',
             'city' => 'required|string|max:100',
-            'province' => 'nullable|string|max:100',
+            'province' => 'required|string|max:100',
             'notes' => 'nullable|string|max:1000',
             'create_account' => 'nullable|boolean',
         ];
@@ -77,7 +78,11 @@ class CheckoutController extends Controller
                     'phone' => $request->input('customer_phone'),
                     'password' => Hash::make($request->input('password')),
                     'role' => 'customer',
-                    'status' => 'active'
+                    'is_active' => true,
+                    'shipping_address' => $request->input('shipping_address'),
+                    'postal_code' => $request->input('postal_code'),
+                    'city' => $request->input('city'),
+                    'province' => $request->input('province'),
                 ]);
 
                 // Log the user in
@@ -87,6 +92,19 @@ class CheckoutController extends Controller
                 Cart::where('session_id', session()->getId())
                     ->whereNull('user_id')
                     ->update(['user_id' => $user->id, 'session_id' => null]);
+            }
+
+            // Update user profile with shipping information if user is logged in
+            if ($user) {
+                $user->update([
+                    'name' => $request->input('customer_name'),
+                    'phone' => $request->input('customer_phone'),
+                    'email' => $request->input('customer_email'),
+                    'shipping_address' => $request->input('shipping_address'),
+                    'postal_code' => $request->input('postal_code'),
+                    'city' => $request->input('city'),
+                    'province' => $request->input('province'),
+                ]);
             }
 
             // Prepare customer data
@@ -122,14 +140,19 @@ class CheckoutController extends Controller
      */
     public function payment($orderId): View|RedirectResponse
     {
-        $order = Order::findOrFail($orderId);
+        $order = Order::with('items.product')->findOrFail($orderId);
 
-        // Check if order belongs to current user or session
+        // Check if user owns this order
         if (Auth::check() && $order->user_id !== Auth::id()) {
-            abort(403);
+            return redirect()->route('cart.index')->with('error', 'شما مجاز به مشاهده این سفارش نیستید');
         }
 
-        return view('checkout.payment', compact('order'));
+        if ($order->status !== 'pending') {
+            return redirect()->route('cart.index')->with('error', 'این سفارش قابل پرداخت نیست');
+        }
+
+        $siteSettings = \App\Models\SiteSetting::current();
+        return view('checkout.payment', compact('order', 'siteSettings'));
     }
 
     /**

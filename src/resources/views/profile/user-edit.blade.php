@@ -192,6 +192,12 @@
         color: #991b1b;
     }
 
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
     @media (max-width: 768px) {
         .profile-container {
             padding: 1rem;
@@ -205,13 +211,17 @@
         .profile-card-body {
             padding: 1.5rem;
         }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
 <div class="profile-container">
     <div class="profile-header">
         <h1>👤 پروفایل من</h1>
-        <p>مدیریت اطلاعات حساب کاربری و تغییر رمز عبور</p>
+        <p>مدیریت اطلاعات حساب کاربری، آدرس و تغییر رمز عبور</p>
     </div>
 
     @if(session('success'))
@@ -248,6 +258,48 @@
                     <label for="email">📧 ایمیل:</label>
                     <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" required>
                     @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">📱 شماره تماس:</label>
+                    <input type="tel" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" class="form-control" placeholder="09123456789">
+                    @error('phone')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="shipping_address">🏠 آدرس کامل:</label>
+                    <textarea id="shipping_address" name="shipping_address" class="form-control" rows="3" placeholder="آدرس کامل پستی...">{{ old('shipping_address', $user->shipping_address) }}</textarea>
+                    @error('shipping_address')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postal_code">📮 کد پستی:</label>
+                        <input type="text" id="postal_code" name="postal_code" value="{{ old('postal_code', $user->postal_code) }}" class="form-control" placeholder="1234567890">
+                        @error('postal_code')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">🏙️ شهر:</label>
+                        <input type="text" id="city" name="city" value="{{ old('city', $user->city) }}" class="form-control" placeholder="تهران">
+                        @error('city')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="province">🗺️ استان:</label>
+                    <input type="text" id="province" name="province" value="{{ old('province', $user->province) }}" class="form-control" placeholder="تهران">
+                    @error('province')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>

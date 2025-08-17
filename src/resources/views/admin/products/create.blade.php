@@ -101,6 +101,108 @@
         box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
     }
 
+    /* Tags Autocomplete Styles */
+    .tags-autocomplete-container {
+        position: relative;
+    }
+
+    .tags-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e9ecef;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .tag-suggestion {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f8f9fa;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .tag-suggestion:hover {
+        background-color: #f8f9fa;
+    }
+
+    .tag-suggestion.selected {
+        background-color: #e3f2fd;
+    }
+
+    .tag-suggestion.create-new-tag {
+        background-color: #f8f9fa;
+        border-left: 3px solid #6c757d;
+    }
+
+    .tag-suggestion.create-new-tag:hover {
+        background-color: #e9ecef;
+    }
+
+    .tag-color-preview {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .selected-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        min-height: 40px;
+        padding: 0.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+
+    .selected-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid;
+    }
+
+    .selected-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .remove-tag {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font-size: 1.2rem;
+        line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .remove-tag:hover {
+        opacity: 1;
+    }
+
     .invalid-feedback {
         display: block;
         width: 100%;
@@ -167,6 +269,80 @@
         max-height: 200px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .multiple-images-preview,
+    .videos-preview {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .preview-item {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    .preview-item:hover {
+        border-color: #667eea;
+    }
+
+    .preview-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .preview-name {
+        font-size: 0.875rem;
+        color: #495057;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .preview-size {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .video-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .video-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: #667eea;
+    }
+
+    .file-upload-area.multiple,
+    .file-upload-area.video {
+        border: 2px dashed #667eea;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    }
+
+    .file-upload-area.multiple:hover,
+    .file-upload-area.video:hover {
+        border-color: #764ba2;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
     }
 
     .multi-select-container {
@@ -595,6 +771,25 @@
                     </div>
                 </div>
 
+                <div class="form-grid single-column">
+                    <div class="form-group">
+                        <label for="tags">برچسب‌ها (تگ‌ها)</label>
+                        <div class="tags-autocomplete-container">
+                            <input type="text"
+                                   id="tagInput"
+                                   class="form-control"
+                                   placeholder="برای جستجو تایپ کنید..."
+                                   autocomplete="off">
+                            <div class="tags-suggestions" id="tagSuggestions"></div>
+                            <div class="selected-tags" id="selectedTags">
+                                <!-- Selected tags will be displayed here -->
+                            </div>
+                            <input type="hidden" name="tags" id="tagsInput" value="">
+                        </div>
+                        <div class="form-help">برچسب‌های مرتبط با محصول را انتخاب کنید</div>
+                    </div>
+                </div>
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="gender">جنسیت هدف *</label>
@@ -627,6 +822,24 @@
                         @enderror
                         <div class="form-help">کد منحصر به فرد محصول (اختیاری)</div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="brand">برند</label>
+                        <select id="brand"
+                                name="brand"
+                                class="form-control {{ $errors->has('brand') ? 'is-invalid' : '' }}">
+                            <option value="">انتخاب کنید</option>
+                            @foreach(\App\Models\Brand::where('status', true)->orderBy('title')->get() as $brandOption)
+                                <option value="{{ $brandOption->id }}" {{ old('brand_id') == $brandOption->id ? 'selected' : '' }}>
+                                    {{ $brandOption->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('brand')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-help">برند محصول (اختیاری)</div>
+                    </div>
                 </div>
             </div>
 
@@ -635,9 +848,10 @@
                 <h3 class="section-title">🖼️ تصویر محصول</h3>
 
                 <div class="form-group">
+                    <label>تصویر اصلی (اختیاری)</label>
                     <div class="file-upload-area" onclick="document.getElementById('image').click()">
                         <div class="file-upload-icon">📷</div>
-                        <div class="file-upload-text">برای انتخاب تصویر کلیک کنید</div>
+                        <div class="file-upload-text">برای انتخاب تصویر اصلی کلیک کنید</div>
                         <div class="file-upload-subtext">یا فایل را اینجا بکشید و رها کنید</div>
                         <div class="file-upload-subtext">فرمت‌های مجاز: JPG, PNG, GIF, WEBP (حداکثر 2MB)</div>
                         <input type="file"
@@ -652,6 +866,46 @@
                     <div class="image-preview" id="imagePreview">
                         <img id="previewImg" class="preview-image" alt="پیش‌نمایش تصویر">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>تصاویر اضافی (چند تصویر)</label>
+                    <div class="file-upload-area multiple" onclick="document.getElementById('images').click()">
+                        <div class="file-upload-icon">🖼️</div>
+                        <div class="file-upload-text">برای انتخاب تصاویر اضافی کلیک کنید</div>
+                        <div class="file-upload-subtext">می‌توانید چندین تصویر انتخاب کنید</div>
+                        <div class="file-upload-subtext">فرمت‌های مجاز: JPG, PNG, GIF, WEBP (حداکثر 2MB)</div>
+                        <input type="file"
+                               id="images"
+                               name="images[]"
+                               class="file-input"
+                               multiple
+                               accept="image/*">
+                    </div>
+                    @error('images.*')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="multiple-images-preview" id="multipleImagesPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>ویدیوهای محصول (اختیاری)</label>
+                    <div class="file-upload-area video" onclick="document.getElementById('videos').click()">
+                        <div class="file-upload-icon">🎥</div>
+                        <div class="file-upload-text">برای انتخاب ویدیو کلیک کنید</div>
+                        <div class="file-upload-subtext">می‌توانید چندین ویدیو انتخاب کنید</div>
+                        <div class="file-upload-subtext">فرمت‌های مجاز: MP4, AVI, MOV, WMV, FLV, WEBM (حداکثر 10MB)</div>
+                        <input type="file"
+                               id="videos"
+                               name="videos[]"
+                               class="file-input"
+                               multiple
+                               accept="video/*">
+                    </div>
+                    @error('videos.*')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="videos-preview" id="videosPreview"></div>
                 </div>
             </div>
 
@@ -828,6 +1082,56 @@
         }
     });
 
+    // Multiple images preview
+    document.getElementById('images').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const preview = document.getElementById('multipleImagesPreview');
+        preview.innerHTML = '';
+
+        files.forEach((file, index) => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'preview-item';
+                    imgContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="تصویر ${index + 1}" class="preview-image">
+                        <div class="preview-info">
+                            <span class="preview-name">${file.name}</span>
+                            <span class="preview-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    `;
+                    preview.appendChild(imgContainer);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+
+    // Videos preview
+    document.getElementById('videos').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const preview = document.getElementById('videosPreview');
+        preview.innerHTML = '';
+
+        files.forEach((file, index) => {
+            if (file.type.startsWith('video/')) {
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'preview-item video';
+                videoContainer.innerHTML = `
+                    <div class="video-preview">
+                        <div class="video-icon">🎥</div>
+                        <div class="preview-info">
+                            <span class="preview-name">${file.name}</span>
+                            <span class="preview-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    </div>
+                `;
+                preview.appendChild(videoContainer);
+            }
+        });
+    });
+
     // Drag and drop functionality
     const uploadArea = document.querySelector('.file-upload-area');
     const fileInput = document.getElementById('image');
@@ -868,5 +1172,217 @@
             fileInput.dispatchEvent(new Event('change'));
         }
     }
+
+    // Tags Autocomplete Functionality
+    const tagInput = document.getElementById('tagInput');
+    const tagSuggestions = document.getElementById('tagSuggestions');
+    const selectedTags = document.getElementById('selectedTags');
+    const tagsInput = document.getElementById('tagsInput');
+
+    // Available tags data
+    const availableTags = @json($tags);
+    let selectedTagIds = [];
+
+    // Show suggestions with better matching
+    function showSuggestions(query) {
+        if (!query.trim()) {
+            tagSuggestions.style.display = 'none';
+            return;
+        }
+
+        const queryLower = query.toLowerCase().trim();
+
+        // First, find exact matches
+        const exactMatches = availableTags.filter(tag =>
+            tag.name.toLowerCase() === queryLower &&
+            !selectedTagIds.includes(tag.id)
+        );
+
+        // Then, find partial matches starting with the query
+        const startsWithMatches = availableTags.filter(tag =>
+            tag.name.toLowerCase().startsWith(queryLower) &&
+            !selectedTagIds.includes(tag.id) &&
+            tag.name.toLowerCase() !== queryLower
+        );
+
+        // Finally, find partial matches containing the query
+        const containsMatches = availableTags.filter(tag =>
+            tag.name.toLowerCase().includes(queryLower) &&
+            !selectedTagIds.includes(tag.id) &&
+            !tag.name.toLowerCase().startsWith(queryLower) &&
+            tag.name.toLowerCase() !== queryLower
+        );
+
+        // Combine all matches in priority order
+        const filteredTags = [...exactMatches, ...startsWithMatches, ...containsMatches];
+
+        let suggestionsHTML = '';
+
+        // Add existing tag suggestions
+        if (filteredTags.length > 0) {
+            suggestionsHTML += filteredTags.map(tag => `
+                <div class="tag-suggestion" data-tag-id="${tag.id}" data-tag-name="${tag.name}" data-tag-color="${tag.color}">
+                    <div class="tag-color-preview" style="background-color: ${tag.color}"></div>
+                    <span>${tag.name}</span>
+                </div>
+            `).join('');
+        }
+
+        // Add "create new tag" option only if no exact match exists and query is meaningful
+        const hasExactMatch = availableTags.some(tag =>
+            tag.name.toLowerCase() === queryLower
+        );
+
+        if (!hasExactMatch && queryLower.length > 2) {
+            suggestionsHTML += `
+                <div class="tag-suggestion create-new-tag" data-tag-name="${query.trim()}" data-is-new="true">
+                    <div class="tag-color-preview" style="background-color: #6c757d"></div>
+                    <span>➕ ایجاد تگ جدید: "${query.trim()}"</span>
+                </div>
+            `;
+        }
+
+        if (suggestionsHTML) {
+            tagSuggestions.innerHTML = suggestionsHTML;
+            tagSuggestions.style.display = 'block';
+        } else {
+            tagSuggestions.style.display = 'none';
+        }
+    }
+
+    // Add tag to selected tags
+    function addTag(tagId, tagName, tagColor, isNew = false) {
+        // For new tags, we'll use a temporary ID
+        const actualTagId = isNew ? `new_${Date.now()}` : tagId;
+
+        if (selectedTagIds.includes(actualTagId)) return;
+
+        selectedTagIds.push(actualTagId);
+
+        const tagElement = document.createElement('div');
+        tagElement.className = 'selected-tag';
+        tagElement.style.backgroundColor = tagColor + '20';
+        tagElement.style.color = tagColor;
+        tagElement.style.borderColor = tagColor + '40';
+        tagElement.dataset.tagId = actualTagId;
+        tagElement.dataset.tagName = tagName;
+        tagElement.dataset.isNew = isNew;
+
+        tagElement.innerHTML = `
+            <span>${tagName}</span>
+            <button type="button" class="remove-tag" onclick="removeTag('${actualTagId}')">×</button>
+        `;
+
+        selectedTags.appendChild(tagElement);
+        updateTagsInput();
+    }
+
+    // Remove tag from selected tags
+    function removeTag(tagId) {
+        selectedTagIds = selectedTagIds.filter(id => id !== tagId);
+        const tagElement = selectedTags.querySelector(`[data-tag-id="${tagId}"]`);
+        if (tagElement) {
+            tagElement.remove();
+        }
+        updateTagsInput();
+    }
+
+    // Update hidden input with selected tag IDs and new tags
+    function updateTagsInput() {
+        const tagData = [];
+
+        selectedTagIds.forEach(tagId => {
+            const tagElement = selectedTags.querySelector(`[data-tag-id="${tagId}"]`);
+            if (tagElement) {
+                const isNew = tagElement.dataset.isNew === 'true';
+                const tagName = tagElement.dataset.tagName;
+
+                if (isNew) {
+                    tagData.push(`new:${tagName}`);
+                } else {
+                    tagData.push(tagId);
+                }
+            }
+        });
+
+        tagsInput.value = tagData.join(',');
+    }
+
+    // Event listeners
+    tagInput.addEventListener('input', function() {
+        showSuggestions(this.value);
+    });
+
+    tagInput.addEventListener('focus', function() {
+        if (this.value.trim()) {
+            showSuggestions(this.value);
+        }
+    });
+
+    // Handle suggestion clicks
+    tagSuggestions.addEventListener('click', function(e) {
+        const suggestion = e.target.closest('.tag-suggestion');
+        if (suggestion) {
+            const isNewTag = suggestion.classList.contains('create-new-tag');
+
+            if (isNewTag) {
+                const tagName = suggestion.dataset.tagName;
+                addTag(null, tagName, '#6c757d', true);
+            } else {
+                const tagId = parseInt(suggestion.dataset.tagId);
+                const tagName = suggestion.dataset.tagName;
+                const tagColor = suggestion.dataset.tagColor;
+
+                addTag(tagId, tagName, tagColor, false);
+            }
+
+            tagInput.value = '';
+            tagSuggestions.style.display = 'none';
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!tagInput.contains(e.target) && !tagSuggestions.contains(e.target)) {
+            tagSuggestions.style.display = 'none';
+        }
+    });
+
+    // Handle keyboard navigation
+    tagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const firstSuggestion = tagSuggestions.querySelector('.tag-suggestion');
+            if (firstSuggestion) {
+                const isNewTag = firstSuggestion.classList.contains('create-new-tag');
+
+                if (isNewTag) {
+                    const tagName = firstSuggestion.dataset.tagName;
+                    addTag(null, tagName, '#6c757d', true);
+                } else {
+                    const tagId = parseInt(firstSuggestion.dataset.tagId);
+                    const tagName = firstSuggestion.dataset.tagName;
+                    const tagColor = firstSuggestion.dataset.tagColor;
+
+                    addTag(tagId, tagName, tagColor, false);
+                }
+
+                this.value = '';
+                tagSuggestions.style.display = 'none';
+            }
+        } else if (e.key === 'Escape') {
+            tagSuggestions.style.display = 'none';
+            tagInput.blur();
+        }
+    });
+
+    // Add debounced search for better performance
+    let searchTimeout;
+    tagInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            showSuggestions(this.value);
+        }, 150);
+    });
 </script>
 @endsection

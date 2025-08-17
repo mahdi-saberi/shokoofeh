@@ -2,9 +2,10 @@ FROM php:8.2-fpm
 
 # نصب اکستنشن‌های مورد نیاز
 RUN apt-get update \
-    && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git unzip curl gosu \
+    && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git unzip curl gosu libicu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install gd pdo pdo_mysql intl
 
 # نصب Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer

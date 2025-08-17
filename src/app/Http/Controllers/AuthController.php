@@ -34,10 +34,20 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Log the login activity
-            ActivityLog::createLog('login', Auth::user());
+            $user = Auth::user();
+            if ($user instanceof \App\Models\User) {
+                ActivityLog::createLog('login', $user);
 
-            return redirect()->intended(route('admin.dashboard'))
-                           ->with('success', 'خوش آمدید! با موفقیت وارد شدید.');
+                // Redirect based on user role
+                if ($user->hasAdminPrivileges()) {
+                    return redirect()->intended(route('admin.dashboard'))
+                                   ->with('success', 'خوش آمدید! با موفقیت وارد شدید.');
+                } else {
+                    // Customer users go to their orders page
+                    return redirect()->intended(route('customer.orders.index'))
+                                   ->with('success', 'خوش آمدید! با موفقیت وارد شدید.');
+                }
+            }
         }
 
         return back()->withErrors([
@@ -84,7 +94,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         // Log the logout activity before logging out
-        if ($user) {
+        if ($user instanceof \App\Models\User) {
             ActivityLog::createLog('logout', $user);
         }
 

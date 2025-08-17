@@ -31,3 +31,39 @@ if (!function_exists('persian_weekday')) {
         return PersianDateHelper::getPersianWeekday($date);
     }
 }
+
+if (!function_exists('format_currency')) {
+    /**
+     * Format currency with Persian abbreviations (هزار، میلیون، میلیارد)
+     */
+    function format_currency($amount): string
+    {
+        if ($amount >= 1000000000) {
+            return number_format($amount / 1000000000, 1) . ' میلیارد تومان';
+        } elseif ($amount >= 1000000) {
+            return number_format($amount / 1000000, 1) . ' میلیون تومان';
+        } elseif ($amount >= 1000) {
+            return number_format($amount / 1000, 0) . ' هزار تومان';
+        } else {
+            return number_format($amount, 0) . ' تومان';
+        }
+    }
+}
+
+if (!function_exists('format_currency_short')) {
+    /**
+     * Format currency with short Persian abbreviations (ه.ت، م.ت، م.ت)
+     */
+    function format_currency_short($amount): string
+    {
+        if ($amount >= 1000000000) {
+            return number_format($amount / 1000000000, 1) . ' م.ت';
+        } elseif ($amount >= 1000000) {
+            return number_format($amount / 1000000, 1) . ' م.ت';
+        } elseif ($amount >= 1000) {
+            return number_format($amount / 1000, 0) . ' ه.ت';
+        } else {
+            return number_format($amount, 0) . ' ت';
+        }
+    }
+}
