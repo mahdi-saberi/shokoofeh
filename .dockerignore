@@ -1,0 +1,67 @@
+# Docker ignore file
+# این فایل مشخص می‌کند که کدام فایل‌ها در Docker build context کپی نشوند
+
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+*.md
+README*
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test files
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Development files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+build/
+dist/
+node_modules/
+
+# Storage (will be mounted as volume)
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/views/.gitignore
+!storage/logs/.gitignore
+
+# Bootstrap cache (will be created in container)
+bootstrap/cache/*
+!bootstrap/cache/.gitignore 

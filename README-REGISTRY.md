@@ -34,7 +34,7 @@ docker-compose up -d
 ## 📦 Image های موجود
 
 ### Laravel App
-- **Image:** `registry.hamdocker.ir/mahdi-saberi/laravel-app:latest`
+- **Image:** `registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest`
 - **توضیحات:** Laravel application با PHP 8.2 و تمام dependencies
 
 ### MySQL
@@ -53,7 +53,7 @@ docker-compose up -d
 ```yaml
 services:
   app:
-    image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+    image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest
   mysql:
     image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
   nginx:

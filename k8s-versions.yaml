@@ -1,62 +1,56 @@
-# فایل ورژن‌های دقیق برای Kubernetes
-# این فایل برای تعریف ورژن‌های ثابت استفاده می‌شود
+# فایل تنظیمات ورژن‌ها برای Kubernetes
+# این فایل شامل ورژن‌های مختلف image ها و تنظیمات deployment است
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-versions
-  labels:
-    app: version-config
+  namespace: default
 data:
-  # ورژن Laravel App - این مقدار باید در هر deployment به‌روزرسانی شود
-  laravel-app-version: "latest"
-  
-  # ورژن Nginx - ثابت و پایدار
-  nginx-version: "1.29.1-alpine"
-  
-  # ورژن MySQL - ثابت و پایدار
+  # ورژن‌های image ها
+  shokoofeh-app-version: "latest"
   mysql-version: "8.0"
-  
-  # تاریخ آخرین به‌روزرسانی
-  last-updated: "2025-01-28"
+  nginx-version: "1.29.1-alpine"
   
   # توضیحات
   description: |
-    ورژن‌های دقیق برای deployment در Kubernetes
-    - nginx: ورژن ثابت 1.29.1-alpine برای پایداری
-    - mysql: ورژن ثابت 8.0 برای پایداری
-    - laravel-app: ورژن متغیر (latest یا ورژن خاص)
+    این فایل شامل ورژن‌های مختلف image ها برای deployment است.
+    برای production از ورژن دقیق استفاده کنید.
+    برای development از latest استفاده کنید.
+    
+    Image ها:
+    - shokoofeh-app: ورژن متغیر (latest یا ورژن خاص)
+    - mysql: ورژن 8.0 (پایدار)
+    - nginx: ورژن 1.29.1-alpine (پایدار)
 ---
-# مثال استفاده در Deployment
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: laravel-app-example
-spec:
-  template:
+  name: deployment-config
+  namespace: default
+data:
+  # مثال deployment
+  example-deployment: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: shokoofeh-app-example
     spec:
-      containers:
-      - name: app
-        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
-        env:
-        - name: APP_VERSION
-          valueFrom:
-            configMapKeyRef:
-              name: app-versions
-              key: laravel-app-version
-      - name: nginx
-        image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
-        env:
-        - name: NGINX_VERSION
-          valueFrom:
-            configMapKeyRef:
-              name: app-versions
-              key: nginx-version
-      - name: mysql
-        image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
-        env:
-        - name: MYSQL_VERSION
-          valueFrom:
-            configMapKeyRef:
-              name: app-versions
-              key: mysql-version 
+      template:
+        spec:
+          containers:
+          - name: app
+            image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest
+          - name: nginx
+            image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: version-selector
+  namespace: default
+data:
+  # Selector برای ورژن‌ها
+  shokoofeh-app-version: "latest"
+  mysql-version: "8.0"
+  nginx-version: "1.29.1-alpine" 

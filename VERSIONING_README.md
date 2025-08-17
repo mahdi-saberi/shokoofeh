@@ -28,8 +28,8 @@
 ```
 
 **خروجی:**
-- `laravel-app:2025.01.28-1430` (ورژن جدید)
-- `laravel-app:latest` (آخرین ورژن)
+- `shokoofeh-app:2025.01.28-1430` (ورژن جدید)
+- `shokoofeh-app:latest` (آخرین ورژن)
 - `nginx:1.29.1-alpine` (ورژن دقیق)
 - `nginx:stable` (ورژن پایدار)
 - `mysql:8.0` (ورژن ثابت)
@@ -49,14 +49,14 @@
 
 #### برای Development
 ```yaml
-image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest
 image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
 image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
 ```
 
 #### برای Production
 ```yaml
-image: registry.hamdocker.ir/mahdi-saberi/laravel-app:2025.01.28-1430
+image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:2025.01.28-1430
 image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
 image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
 ```

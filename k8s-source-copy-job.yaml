@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: copy-source
-        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+        image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest
         command: ['/bin/sh', '-c']
         args:
         - |

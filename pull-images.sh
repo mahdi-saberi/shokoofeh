@@ -16,7 +16,7 @@ echo ""
 
 # Pull کردن Laravel app image
 echo -e "${GREEN}📥 Pulling Laravel app image...${NC}"
-docker pull ${REGISTRY}/${USERNAME}/laravel-app:latest
+docker pull ${REGISTRY}/${USERNAME}/shokoofeh-app:latest
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Laravel app image pull شد${NC}"
 else
@@ -48,7 +48,7 @@ echo ""
 echo -e "${GREEN}🎉 تمام image ها با موفقیت از registry دریافت شدند!${NC}"
 echo ""
 echo -e "${YELLOW}📋 خلاصه image های دریافت شده:${NC}"
-echo -e "  • ${REGISTRY}/${USERNAME}/laravel-app:latest"
+echo -e "  • ${REGISTRY}/${USERNAME}/shokoofeh-app:latest"
 echo -e "  • ${REGISTRY}/${USERNAME}/mysql:8.0"
 echo -e "  • ${REGISTRY}/${USERNAME}/nginx:alpine"
 echo ""

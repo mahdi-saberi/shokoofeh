@@ -1,28 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: laravel-app
+  name: laravel-unified
 spec:
-  serviceName: laravel-service
+  serviceName: laravel-unified-service
   replicas: 1
   selector:
     matchLabels:
-      app: laravel-app
+      app: laravel-unified
   template:
     metadata:
       labels:
-        app: laravel-app
+        app: laravel-unified
     spec:
       containers:
       - name: app
-        image: registry.hamdocker.ir/mahdi-saberi/laravel-app:latest
+        image: registry.hamdocker.ir/mahdi-saberi/laravel-unified:latest
         ports:
-        - containerPort: 9000
-        volumeMounts:
-        - name: shared-source
-          mountPath: /var/www
-        - name: app-storage
-          mountPath: /var/www/storage
+        - containerPort: 80
         env:
         - name: DB_HOST
           value: "mysql"
@@ -32,31 +27,60 @@ spec:
           value: "laravel"
         - name: DB_PASSWORD
           value: "laravel"
-      - name: nginx
-        image: registry.hamdocker.ir/mahdi-saberi/nginx:1.29.1-alpine
-        ports:
-        - containerPort: 80
+        - name: APP_ENV
+          value: "production"
+        - name: APP_DEBUG
+          value: "false"
+        - name: CACHE_DRIVER
+          value: "file"
+        - name: SESSION_DRIVER
+          value: "file"
+        - name: QUEUE_DRIVER
+          value: "sync"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         volumeMounts:
-        - name: shared-source
-          mountPath: /var/www
-        - name: nginx-config
-          mountPath: /etc/nginx/conf.d/default.conf
-          subPath: nginx.conf
+        - name: app-storage
+          mountPath: /var/www/storage
+        - name: app-cache
+          mountPath: /var/www/bootstrap/cache
+        - name: app-logs
+          mountPath: /var/www/storage/logs
       volumes:
-      - name: shared-source
-        persistentVolumeClaim:
-          claimName: shared-source-pvc
       - name: app-storage
         persistentVolumeClaim:
           claimName: app-storage-pvc
-      - name: nginx-config
-        configMap:
-          name: nginx-config
+      - name: app-cache
+        emptyDir: {}
+      - name: app-logs
+        persistentVolumeClaim:
+          claimName: app-logs-pvc
   volumeClaimTemplates:
   - metadata:
-      name: shared-source
+      name: app-storage
     spec:
-      accessModes: ["ReadWriteMany"]
+      accessModes: ["ReadWriteOnce"]
       resources:
         requests:
           storage: 2Gi
@@ -64,10 +88,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: laravel-service
+  name: laravel-unified-service
 spec:
   selector:
-    app: laravel-app
+    app: laravel-unified
   ports:
   - protocol: TCP
     port: 80
@@ -77,7 +101,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: app-storage-pvc
+  name: app-logs-pvc
 spec:
   accessModes:
     - ReadWriteOnce
@@ -86,37 +110,24 @@ spec:
       storage: 1Gi
 ---
 apiVersion: v1
-kind: ConfigMap
+kind: Ingress
 metadata:
-  name: nginx-config
-data:
-  nginx.conf: |
-    server {
-        listen 80;
-        index index.php index.html;
-        server_name localhost;
-        root /var/www/public;
-
-        client_max_body_size 100M;
-
-        location / {
-            try_files $uri $uri/ /index.php?$query_string;
-        }
-
-        location ~ \.php$ {
-            fastcgi_pass localhost:9000;
-            fastcgi_index index.php;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            include fastcgi_params;
-            
-            fastcgi_read_timeout 300;
-            fastcgi_send_timeout 300;
-            fastcgi_connect_timeout 300;
-            fastcgi_buffers 16 16k;
-            fastcgi_buffer_size 32k;
-        }
-
-        location ~ /\.ht {
-            deny all;
-        }
-    } 
+  name: laravel-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  rules:
+  - host: laravel.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: laravel-unified-service
+            port:
+              number: 80 

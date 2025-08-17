@@ -1,26 +1,24 @@
 version: '3.8'
 services:
   app:
-    # برای development، از build استفاده می‌کنیم
     build:
       context: .
-      dockerfile: Dockerfile
-    # برای production، از image استفاده می‌کنیم
-    # image: registry.hamdocker.ir/mahdi-saberi/shokoofeh-app:latest
-    container_name: shokoofeh-app
-    restart: unless-stopped
+      dockerfile: Dockerfile.unified.simple
+    image: laravel-unified:test
+    container_name: laravel-unified-test
+    restart: "no"
     ports:
       - "8080:80"
-      - "9000:9000"  # PHP-FPM port برای development
     volumes:
       - ./src:/var/www
       - ./storage:/var/www/storage
-      # اضافه کردن vendor برای development
-      - ./src/vendor:/var/www/vendor
+      - laravel_cache:/var/www/storage/framework/cache
+      - laravel_sessions:/var/www/storage/framework/sessions
+      - laravel_views:/var/www/storage/framework/views
+      - laravel_logs:/var/www/storage/logs
+      - laravel_bootstrap:/var/www/bootstrap/cache
     networks:
-      - laravel
-    depends_on:
-      - mysql
+      - test
     environment:
       - DB_HOST=mysql
       - DB_DATABASE=toyshop
@@ -28,32 +26,31 @@ services:
       - DB_PASSWORD=laravel
       - APP_ENV=local
       - APP_DEBUG=true
-      - LOG_LEVEL=debug
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_DRIVER=sync
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-  
+
   mysql:
-    image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
-    container_name: mysql
-    restart: unless-stopped
+    image: mysql:8.0
+    container_name: mysql-test
+    restart: "no"
     environment:
       MYSQL_DATABASE: toyshop
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: laravel
       MYSQL_PASSWORD: laravel
-      MYSQL_LOG_CONSOLE: "true"
     ports:
       - "3307:3306"
-      - "33060:33060"  # MySQL X Protocol برای development
     volumes:
-      - dbdata:/var/lib/mysql
-      - ./database/init:/docker-entrypoint-initdb.d  # برای development
+      - mysql_test_data:/var/lib/mysql
     networks:
-      - laravel
+      - test
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
@@ -61,9 +58,19 @@ services:
       retries: 3
 
 networks:
-  laravel:
+  test:
     driver: bridge
 
 volumes:
-  dbdata:
+  mysql_test_data:
+    driver: local
+  laravel_cache:
+    driver: local
+  laravel_sessions:
+    driver: local
+  laravel_views:
+    driver: local
+  laravel_logs:
+    driver: local
+  laravel_bootstrap:
     driver: local 
