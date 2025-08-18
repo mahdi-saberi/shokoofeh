@@ -14,7 +14,6 @@ services:
       - "9000:9000"  # PHP-FPM port برای development
     volumes:
       - ./src:/var/www
-      - ./storage:/var/www/storage
       # اضافه کردن vendor برای development
       - ./src/vendor:/var/www/vendor
     networks:

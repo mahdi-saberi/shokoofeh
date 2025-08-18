@@ -23,7 +23,7 @@ COPY ./src /var/www
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # تنظیم مجوزها
-RUN chown -R www-data:www-data /var/www \
+RUN chown -R 1000:1000 /var/www \
     && chmod -R 775 /var/www/storage \
     && chmod -R 775 /var/www/bootstrap/cache
 
