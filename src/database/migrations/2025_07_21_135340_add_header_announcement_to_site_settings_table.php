@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::table('site_settings', function (Blueprint $table) {
             // Header Announcement Settings
-            $table->boolean('header_announcement_enabled')->default(false)->after('meta_description');
-            $table->text('header_announcement_text')->nullable()->after('header_announcement_enabled');
-            $table->string('header_announcement_bg_color')->default('#667eea')->after('header_announcement_text');
-            $table->string('header_announcement_text_color')->default('#ffffff')->after('header_announcement_bg_color');
+            $table->boolean('header_announcement_enabled')->default(false);
+            $table->text('header_announcement_text')->nullable();
+            $table->string('header_announcement_bg_color')->default('#667eea');
+            $table->string('header_announcement_text_color')->default('#ffffff');
         });
     }
 

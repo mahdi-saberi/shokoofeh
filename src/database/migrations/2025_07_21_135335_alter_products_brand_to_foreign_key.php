@@ -13,26 +13,26 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             // ابتدا فیلد brand را به brand_id تغییر می‌دهیم
-            $table->unsignedBigInteger('brand_id')->nullable()->after('brand');
+            $table->unsignedBigInteger('brand_id')->nullable();
 
             // اضافه کردن foreign key
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
         });
 
         // انتقال داده‌ها از فیلد brand به brand_id
-        $products = \App\Models\Product::whereNotNull('brand')->get();
-        foreach ($products as $product) {
-            $brand = \App\Models\Brand::where('title', $product->brand)->first();
-            if ($brand) {
-                $product->brand_id = $brand->id;
-                $product->save();
-            }
-        }
+        // $products = \App\Models\Product::whereNotNull('brand')->get();
+        // foreach ($products as $product) {
+        //     $brand = \App\Models\Brand::where('title', $product->brand)->first();
+        //     if ($brand) {
+        //         $product->brand_id = $brand->id;
+        //         $product->save();
+        //     }
+        // }
 
         // حذف فیلد brand قدیمی
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('brand');
-        });
+        // Schema::table('products', function (Blueprint $table) {
+        //     $table->dropColumn('brand');
+        // });
     }
 
     /**
@@ -42,7 +42,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             // اضافه کردن فیلد brand قدیمی
-            $table->string('brand')->nullable()->after('product_code');
+            $table->string('brand')->nullable();
 
             // انتقال داده‌ها از brand_id به brand
             $products = \App\Models\Product::whereNotNull('brand_id')->get();

@@ -14,10 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test users
-        User::factory()->create([
+        // Create test users without factory
+        User::create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => Hash::make('password'),
             'role' => 'super_admin',
             'is_active' => true,
         ]);
