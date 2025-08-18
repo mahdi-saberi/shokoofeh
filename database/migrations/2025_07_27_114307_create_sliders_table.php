@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-                Schema::create('products', function (Blueprint $table) {
+        Schema::create('sliders', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('image')->nullable();
-            $table->string('age_group');
-            $table->string('game_type');
-            $table->string('category');
-            $table->unsignedBigInteger('brand_id')->nullable();
+            $table->text('description')->nullable();
+            $table->string('image');
+            $table->string('button_text')->nullable();
+            $table->string('button_url')->nullable();
+            $table->integer('order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('sliders');
     }
 };

@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-                Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_tag', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('image')->nullable();
-            $table->string('age_group');
-            $table->string('game_type');
-            $table->string('category');
-            $table->unsignedBigInteger('brand_id')->nullable();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+
+            // جلوگیری از تکرار
+            $table->unique(['product_id', 'tag_id']);
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_tag');
     }
 };

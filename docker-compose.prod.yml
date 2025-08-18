@@ -12,6 +12,7 @@ services:
       - "8080:80"
     volumes:
       - ./storage:/var/www/storage
+      - ./src:/var/www
     networks:
       - laravel
     depends_on:
