@@ -11,19 +11,18 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./src:/var/www
+      # Laravel storage directory - برای فایل‌های upload شده و لاگ‌ها
+      - laravel_storage:/var/www/laravel-app/storage
+      # Laravel public uploads - برای فایل‌های عمومی
+      - laravel_public_uploads:/var/www/laravel-app/public/uploads
+      # Environment configurations - برای تنظیمات محیط
+      - laravel_config:/var/www/laravel-app/config/production
     networks:
       - laravel
     depends_on:
       - mysql
-    environment:
-      - DB_HOST=mysql
-      - DB_DATABASE=toyshop
-      - DB_USERNAME=laravel
-      - DB_PASSWORD=laravel
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - LOG_LEVEL=error
+    env_file:
+      - docker-compose.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
@@ -35,15 +34,17 @@ services:
     image: registry.hamdocker.ir/mahdi-saberi/mysql:8.0
     container_name: mysql-prod
     restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: toyshop
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+    env_file:
+      - docker-compose.env
     ports:
       - "3307:3306"
     volumes:
-      - dbdata_prod:/var/lib/mysql
+      # MySQL data persistence
+      - mysql_data_prod:/var/lib/mysql
+      # MySQL configuration
+      - mysql_config_prod:/etc/mysql/conf.d
+      # MySQL backups directory
+      - mysql_backups_prod:/backups
     networks:
       - laravel
     healthcheck:
@@ -57,5 +58,42 @@ networks:
     driver: bridge
 
 volumes:
-  dbdata_prod:
-    driver: local 
+  # Laravel volumes
+  laravel_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/shokoofeh/storage
+  laravel_public_uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/shokoofeh/uploads
+  laravel_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/shokoofeh/config
+  
+  # MySQL volumes
+  mysql_data_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/mysql/data
+  mysql_config_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/mysql/config
+  mysql_backups_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/mysql/backups 

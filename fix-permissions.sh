@@ -3,15 +3,18 @@
 echo "🔧 Fixing Laravel permissions in Docker container..."
 
 # Get container name from command line argument or use default
-CONTAINER_NAME=${1:-"shokoofeh-app-prod"}
+CONTAINER_NAME=${1:-"shokoofeh-app"}
 
 echo "📦 Working with container: $CONTAINER_NAME"
 
 # Fix storage permissions
 echo "📁 Fixing storage permissions..."
 docker exec -it $CONTAINER_NAME sh -c "
-    # Create necessary directories
-    mkdir -p /var/www/storage/framework/{sessions,views,cache,testing}
+    # Create necessary directories (one by one to avoid brace expansion issues)
+    mkdir -p /var/www/storage/framework/sessions
+    mkdir -p /var/www/storage/framework/views
+    mkdir -p /var/www/storage/framework/cache
+    mkdir -p /var/www/storage/framework/testing
     mkdir -p /var/www/storage/logs
     mkdir -p /var/www/bootstrap/cache
     

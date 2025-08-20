@@ -16,16 +16,26 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# کپی کردن فایل‌های پروژه
-COPY ./src /var/www
+# کپی کردن کل پروژه
+COPY . /var/www/
+
+# ایجاد دایرکتوری جدید برای Laravel
+RUN mkdir -p /var/www/laravel-app
+
+# انتقال فایل‌های Laravel از src به laravel-app
+RUN cp -r /var/www/src/* /var/www/laravel-app/ && rm -rf /var/www/src
+
+# کپی کردن فایل .env به laravel-app (اگر وجود داشته باشد)
+RUN if [ -f /var/www/.env ]; then cp /var/www/.env /var/www/laravel-app/; fi
 
 # نصب dependencies
+WORKDIR /var/www/laravel-app
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # تنظیم مجوزها
 RUN chown -R 1000:1000 /var/www \
-    && chmod -R 775 /var/www/storage \
-    && chmod -R 775 /var/www/bootstrap/cache
+    && chmod -R 775 /var/www/laravel-app/storage \
+    && chmod -R 775 /var/www/laravel-app/bootstrap/cache
 
 # Stage 2: Final image with Nginx + PHP-FPM
 FROM nginx:1.29.1-alpine
@@ -62,7 +72,7 @@ RUN apk add --no-cache \
 # ایجاد symlink برای php command
 RUN ln -sf /usr/bin/php82 /usr/local/bin/php
 
-# کپی کردن فایل‌های Laravel
+# کپی کردن فایل‌های پروژه
 COPY --from=app-builder /var/www /var/www
 
 # ایجاد کاربر و گروه
@@ -70,15 +80,21 @@ RUN addgroup -g 1000 www \
     && adduser -u 1000 -G www -s /bin/sh -D www
 
 # ایجاد دایرکتوری‌های مورد نیاز و تنظیم مجوزها
-RUN mkdir -p /var/www/storage/framework/cache \
-    && mkdir -p /var/www/storage/framework/sessions \
-    && mkdir -p /var/www/storage/framework/views \
-    && mkdir -p /var/www/storage/framework/testing \
-    && mkdir -p /var/www/storage/logs \
-    && mkdir -p /var/www/bootstrap/cache \
+RUN mkdir -p /var/www/laravel-app/storage/framework/cache \
+    && mkdir -p /var/www/laravel-app/storage/framework/sessions \
+    && mkdir -p /var/www/laravel-app/storage/framework/views \
+    && mkdir -p /var/www/laravel-app/storage/framework/testing \
+    && mkdir -p /var/www/laravel-app/storage/logs \
+    && mkdir -p /var/www/laravel-app/bootstrap/cache \
     && chown -R www:www /var/www \
-    && chmod -R 775 /var/www/storage \
-    && chmod -R 775 /var/www/bootstrap/cache
+    && chmod -R 775 /var/www/laravel-app/storage \
+    && chmod -R 775 /var/www/laravel-app/bootstrap/cache
+
+# تنظیم PHP-FPM برای اجرا با user www
+RUN sed -i 's/user = nobody/user = www/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/group = nobody/group = www/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/listen.owner = nobody/listen.owner = www/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/listen.group = nobody/listen.group = www/g' /etc/php82/php-fpm.d/www.conf
 
 # کپی کردن nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf

@@ -1,29 +1,15 @@
-# Docker ignore file
-# این فایل مشخص می‌کند که کدام فایل‌ها در Docker build context کپی نشوند
+# Git ignore file for Shokoofeh project
 
-# Git files
-.git
-.gitignore
-.gitattributes
+# Environment files
+.env
+.env.*
+docker-compose.env
+!env.production.template
 
 # Docker files
-Dockerfile*
+Dockerfile
 docker-compose*.yml
 .dockerignore
-
-# Documentation
-*.md
-README*
-
-# IDE files
-.vscode
-.idea
-*.swp
-*.swo
-
-# OS files
-.DS_Store
-Thumbs.db
 
 # Logs
 *.log
@@ -37,21 +23,30 @@ logs/
 *.tmp
 *.temp
 
-# Test files
-tests/
-phpunit.xml
-.phpunit.result.cache
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Development files
-# .env files are now needed for production builds
-# .env
-# .env.*
-!.env.example
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.tar.gz
+
+# Node modules (if any)
+node_modules/
 
 # Build artifacts
 build/
 dist/
-node_modules/
+
+# Database files
+*.sql
+*.sqlite
 
 # Storage (will be mounted as volume)
 storage/framework/cache/*

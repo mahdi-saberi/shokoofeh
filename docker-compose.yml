@@ -13,9 +13,9 @@ services:
       - "8080:80"
       - "9000:9000"  # PHP-FPM port برای development
     volumes:
-      - ./src:/var/www
+      - ./src:/var/www/laravel-app
       # اضافه کردن vendor برای development
-      - ./src/vendor:/var/www/vendor
+      - ./src/vendor:/var/www/laravel-app/vendor
     networks:
       - laravel
     depends_on:
