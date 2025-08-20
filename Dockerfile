@@ -90,6 +90,11 @@ RUN mkdir -p /var/www/laravel-app/storage/framework/cache \
     && chmod -R 775 /var/www/laravel-app/storage \
     && chmod -R 775 /var/www/laravel-app/bootstrap/cache
 
+# ایجاد symlink برای .env (برای Laravel compatibility)
+RUN if [ -f /var/www/laravel-app/config/production/.env ]; then \
+        ln -sf /var/www/laravel-app/config/production/.env /var/www/laravel-app/.env; \
+    fi
+
 # تنظیم PHP-FPM برای اجرا با user www
 RUN sed -i 's/user = nobody/user = www/g' /etc/php82/php-fpm.d/www.conf \
     && sed -i 's/group = nobody/group = www/g' /etc/php82/php-fpm.d/www.conf \
