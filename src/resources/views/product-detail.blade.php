@@ -470,12 +470,12 @@
         <div class="product-gallery">
             <!-- Main Product Image -->
             <div class="main-product-image">
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}"
+                @if($product->image_url)
+                    <img src="{{ $product->image_url }}"
                          alt="{{ $product->title }}"
                          class="product-main-image">
                 @else
-                    <img src="https://via.placeholder.com/400x400?text=تصویر+محصول"
+                    <img src="https://placehold.co/400x400/EEE/333?text=Product"
                          alt="{{ $product->title }}"
                          class="product-main-image">
                 @endif

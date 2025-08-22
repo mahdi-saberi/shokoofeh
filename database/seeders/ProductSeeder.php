@@ -88,6 +88,33 @@ class ProductSeeder extends Seeder
             'اسباب بازی مقاوم و بادوام برای سال‌ها استفاده'
         ];
 
+        // Placeholder images using placehold.co with vibrant random colors
+        $placeholderImages = [
+            // Small product images (400x400) - Vibrant colors
+            'https://placehold.co/400x400/FF6B6B/FFFFFF?text=Product',
+            'https://placehold.co/400x400/4ECDC4/FFFFFF?text=Lego',
+            'https://placehold.co/400x400/45B7D1/FFFFFF?text=Doll',
+            'https://placehold.co/400x400/96CEB4/FFFFFF?text=Car',
+            'https://placehold.co/400x400/FFEAA7/31343C?text=Puzzle',
+            'https://placehold.co/400x400/DDA0DD/FFFFFF?text=Board+Game',
+            'https://placehold.co/400x400/98D8C8/FFFFFF?text=Card',
+            'https://placehold.co/400x400/F7DC6F/31343C?text=Art',
+            'https://placehold.co/400x400/BB8FCE/FFFFFF?text=Music',
+            'https://placehold.co/400x400/85C1E9/FFFFFF?text=Sport',
+            
+            // Additional vibrant colors
+            'https://placehold.co/400x400/FF9F43/FFFFFF?text=Toy',
+            'https://placehold.co/400x400/00B894/FFFFFF?text=Game',
+            'https://placehold.co/400x400/74B9FF/FFFFFF?text=Fun',
+            'https://placehold.co/400x400/FDCB6E/31343C?text=Play',
+            'https://placehold.co/400x400/E17055/FFFFFF?text=Learn',
+            'https://placehold.co/400x400/6C5CE7/FFFFFF?text=Create',
+            'https://placehold.co/400x400/A29BFE/FFFFFF?text=Explore',
+            'https://placehold.co/400x400/00CEC9/FFFFFF?text=Discover',
+            'https://placehold.co/400x400/FF7675/FFFFFF?text=Imagine',
+            'https://placehold.co/400x400/55A3FF/FFFFFF?text=Grow'
+        ];
+
         foreach ($productTemplates as $categoryName => $products) {
             foreach ($products as $productName) {
                 if ($productCount >= $totalProducts) break 2;
@@ -121,7 +148,7 @@ class ProductSeeder extends Seeder
                     'game_type' => $selectedGameType,
                     'category' => $selectedCategory,
                     'gender' => $selectedGender,
-                    'image' => null,
+                    'image' => $placeholderImages[array_rand($placeholderImages)],
                     'stock' => $stock,
                 ]);
 
@@ -161,7 +188,7 @@ class ProductSeeder extends Seeder
                 'game_type' => $selectedGameType,
                 'category' => $selectedCategory,
                 'gender' => $selectedGender,
-                'image' => null,
+                'image' => $placeholderImages[array_rand($placeholderImages)],
                 'stock' => $stock,
             ]);
 

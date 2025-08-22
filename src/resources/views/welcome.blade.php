@@ -419,7 +419,7 @@
 
                                         <a href="{{ route('product.show', $product->id) }}" class="product-link">
                                             <div class="product-image-container">
-                                                <img src="{{ $product->image_url ?: 'https://via.placeholder.com/300x200?text=تصویر+محصول' }}"
+                                                <img src="{{ $product->image_url ?: 'https://placehold.co/300x200/EEE/333?text=Product' }}"
                                                      alt="{{ $product->title }}"
                                                      class="product-image"
                                                      loading="lazy">
@@ -522,7 +522,7 @@
 
                                 <a href="{{ route('product.show', $product->id) }}" class="product-link">
                                     <div class="product-image-container">
-                                        <img src="{{ $product->image_url ?: 'https://via.placeholder.com/300x200?text=تصویر+محصول' }}"
+                                        <img src="{{ $product->image_url ?: 'https://placehold.co/300x200/EEE/333?text=Product' }}"
                                              alt="{{ $product->title }}"
                                              class="product-image"
                                              loading="lazy">
@@ -690,7 +690,7 @@
 
                         <a href="{{ route('product.show', $product->id) }}" class="product-link">
                             <div class="product-image-container">
-                                <img src="{{ $product->image_url ?: 'https://via.placeholder.com/300x200?text=تصویر+محصول' }}"
+                                <img src="{{ $product->image_url ?: 'https://placehold.co/300x200/EEE/333?text=Product' }}"
                                      alt="{{ $product->title }}"
                                      class="product-image"
                                      loading="lazy">

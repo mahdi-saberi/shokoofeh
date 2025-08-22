@@ -16,7 +16,7 @@ class SliderSeeder extends Seeder
             [
                 'title' => 'فروش ویژه اسباب بازی‌های آموزشی',
                 'description' => 'تا ۵۰٪ تخفیف روی محصولات آموزشی و کارتی',
-                'image' => 'https://via.placeholder.com/1200x400/667eea/ffffff?text=فروش+ویژه+اسباب+بازی‌های+آموزشی',
+                'image' => 'https://placehold.co/1200x400/667eea/ffffff?text=Special+Sale',
                 'button_text' => 'مشاهده محصولات',
                 'button_url' => '#',
                 'order' => 1,
@@ -25,7 +25,7 @@ class SliderSeeder extends Seeder
             [
                 'title' => 'جدیدترین محصولات لگو',
                 'description' => 'کشف کنید جدیدترین ست‌های لگو برای کودکان',
-                'image' => 'https://via.placeholder.com/1200x400/764ba2/ffffff?text=جدیدترین+محصولات+لگو',
+                'image' => 'https://placehold.co/1200x400/764ba2/ffffff?text=New+Lego+Products',
                 'button_text' => 'خرید لگو',
                 'button_url' => '#',
                 'order' => 2,
@@ -34,7 +34,7 @@ class SliderSeeder extends Seeder
             [
                 'title' => 'عروسک‌های محبوب کودکان',
                 'description' => 'مجموعه‌ای از زیباترین عروسک‌ها برای کودکان',
-                'image' => 'https://via.placeholder.com/1200x400/28a745/ffffff?text=عروسک‌های+محبوب+کودکان',
+                'image' => 'https://placehold.co/1200x400/28a745/ffffff?text=Popular+Dolls',
                 'button_text' => 'مشاهده عروسک‌ها',
                 'button_url' => '#',
                 'order' => 3,
@@ -43,7 +43,7 @@ class SliderSeeder extends Seeder
             [
                 'title' => 'پازل‌های چالش برانگیز',
                 'description' => 'پازل‌هایی برای تقویت قدرت تفکر و تمرکز کودکان',
-                'image' => 'https://via.placeholder.com/1200x400/ffc107/000000?text=پازل‌های+چالش+برانگیز',
+                'image' => 'https://placehold.co/1200x400/ffc107/000000?text=Challenging+Puzzles',
                 'button_text' => 'انتخاب پازل',
                 'button_url' => '#',
                 'order' => 4,

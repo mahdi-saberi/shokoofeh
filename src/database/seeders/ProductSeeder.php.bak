@@ -90,16 +90,16 @@ class ProductSeeder extends Seeder
 
         // Placeholder images using placehold.co
         $placeholderImages = [
-            'https://placehold.co/400x400/FF6B6B/FFFFFF?text=Product',
-            'https://placehold.co/400x400/4ECDC4/FFFFFF?text=Lego',
-            'https://placehold.co/400x400/45B7D1/FFFFFF?text=Doll',
-            'https://placehold.co/400x400/96CEB4/FFFFFF?text=Car',
-            'https://placehold.co/400x400/FFEAA7/31343C?text=Puzzle',
-            'https://placehold.co/400x400/DDA0DD/FFFFFF?text=Board+Game',
-            'https://placehold.co/400x400/98D8C8/FFFFFF?text=Card',
-            'https://placehold.co/400x400/F7DC6F/31343C?text=Art',
-            'https://placehold.co/400x400/BB8FCE/FFFFFF?text=Music',
-            'https://placehold.co/400x400/85C1E9/FFFFFF?text=Sport'
+            'https://placehold.co/400x400/FF6B6B/FFFFFF?text=اسباب+بازی',
+            'https://placehold.co/400x400/4ECDC4/FFFFFF?text=لگو',
+            'https://placehold.co/400x400/45B7D1/FFFFFF?text=عروسک',
+            'https://placehold.co/400x400/96CEB4/FFFFFF?text=ماشین',
+            'https://placehold.co/400x400/FFEAA7/31343C?text=پازل',
+            'https://placehold.co/400x400/DDA0DD/FFFFFF?text=بازی+رومیزی',
+            'https://placehold.co/400x400/98D8C8/FFFFFF?text=کارت',
+            'https://placehold.co/400x400/F7DC6F/31343C?text=هنری',
+            'https://placehold.co/400x400/BB8FCE/FFFFFF?text=موسیقی',
+            'https://placehold.co/400x400/85C1E9/FFFFFF?text=ورزشی'
         ];
 
         foreach ($productTemplates as $categoryName => $products) {

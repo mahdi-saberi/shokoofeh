@@ -468,7 +468,26 @@ class Product extends Model
             return asset('storage/' . $this->image);
         }
 
-        // تصویر پیش‌فرض برای اسباب بازی
-        return 'https://via.placeholder.com/300x200/FFE66D/333333?text=' . urlencode('🧸 ' . ($this->title ?? 'محصول'));
+        // تصویر پیش‌فرض برای اسباب بازی با رنگ‌های رندوم
+        $colors = [
+            ['bg' => 'FF6B6B', 'text' => 'FFFFFF'], // قرمز
+            ['bg' => '4ECDC4', 'text' => 'FFFFFF'], // فیروزه‌ای
+            ['bg' => '45B7D1', 'text' => 'FFFFFF'], // آبی
+            ['bg' => '96CEB4', 'text' => 'FFFFFF'], // سبز
+            ['bg' => 'FFEAA7', 'text' => '31343C'], // زرد
+            ['bg' => 'DDA0DD', 'text' => 'FFFFFF'], // بنفش
+            ['bg' => '98D8C8', 'text' => 'FFFFFF'], // سبز روشن
+            ['bg' => 'F7DC6F', 'text' => '31343C'], // طلایی
+            ['bg' => 'BB8FCE', 'text' => 'FFFFFF'], // بنفش روشن
+            ['bg' => '85C1E9', 'text' => 'FFFFFF'], // آبی روشن
+            ['bg' => 'FF9F43', 'text' => 'FFFFFF'], // نارنجی
+            ['bg' => '00B894', 'text' => 'FFFFFF'], // سبز تیره
+            ['bg' => '74B9FF', 'text' => 'FFFFFF'], // آبی آسمانی
+            ['bg' => 'FDCB6E', 'text' => '31343C'], // زرد تیره
+            ['bg' => 'E17055', 'text' => 'FFFFFF'], // قرمز تیره
+        ];
+
+        $randomColor = $colors[array_rand($colors)];
+        return "https://placehold.co/300x200/{$randomColor['bg']}/{$randomColor['text']}?text=Product";
     }
 }
